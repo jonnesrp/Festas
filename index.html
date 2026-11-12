@@ -9,8 +9,8 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="João Siqueira convida!">
 <meta property="og:description" content="As festas da semana, com Lista VIP e ingresso com desconto.">
-<meta property="og:image" content="https://jonnesrp.github.io/festas/capa.jpg">
-<meta property="og:url" content="https://jonnesrp.github.io/festas/">
+<meta property="og:image" content="https://jonnesrp.github.io/Festas/capa.jpg">
+<meta property="og:url" content="https://jonnesrp.github.io/Festas/">
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap">
@@ -167,7 +167,8 @@ h2{font-family:var(--display);font-weight:800;font-size:22px;margin:0 0 12px;let
 <script>
 // As festas vêm da planilha "Site - Festas" (lida ao vivo). dados.js é só uma cópia de reserva.
 const PLANILHA="1JVHsvlKl9VrYhiRwuzt8B_21SmFlOmJJl0F4Cv-JveA";
-// Fase 3: endereço do Apps Script que grava a Lista VIP na planilha. Vazio = lista pelo formulário da coluna "Link da lista VIP".
+// Endereço do Apps Script da planilha (apps-script/Code.gs): entrega as festas e grava a Lista VIP.
+// Vazio = site usa a cópia de reserva e a Lista VIP abre o link da coluna "Link da lista VIP", se houver.
 const VIP_ENDPOINT="";
 // flyers na pasta flyers/; a coluna "Flyer (link)" da planilha tem prioridade
 const FLYER={"cardume-nye-27":["cardume","50% 35%","50% 68%"],"fua-quinta-de-verao":["fua"],"fua-ultimate-pop":["fuafoto","40% 50%"],"lets-up-5-anos":["letsup","50% 20%"],"cha-da-alice-verao":["cha","50% 22%"],"furduncinho":["furd","50% 30%"],"he-she-they-apresenta-cristobal-pesce":["hst"],"rush":["rush"],"sambalaia":["sambalaia"],"cardume-verano":["verano","50% 40%"],"festa-javali-14-anos":["javali"],"rupaul-ao-vivo":["rupaul","50% 30%"],"ensaios-da-anitta-2027":["anitta","70% 30%"]};
@@ -197,6 +198,9 @@ function usar(L){FESTAS=festasDaPlanilha(L);render();rota()}
 async function carregar(){
   let guardada=null;try{guardada=JSON.parse(localStorage.getItem("jonnes-festas")||"null")}catch(_){}
   usar(valida(guardada)?guardada:LINHAS_COPIA);
+  if(VIP_ENDPOINT){try{const r=await fetch(VIP_ENDPOINT,{cache:"no-store"});const j=await r.json();if(j.ok&&valida(j.linhas)){
+      try{localStorage.setItem("jonnes-festas",JSON.stringify(j.linhas))}catch(_){}
+      if(!document.getElementById("sheetRoot").innerHTML)usar(j.linhas);return}}catch(_){}}
   for(const u of [`https://docs.google.com/spreadsheets/d/${PLANILHA}/export?format=csv`,`https://docs.google.com/spreadsheets/d/${PLANILHA}/gviz/tq?tqx=out:csv&headers=1`]){
     try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)continue;const L=csv(await r.text());if(!valida(L))continue;
       try{localStorage.setItem("jonnes-festas",JSON.stringify(L))}catch(_){}
@@ -349,7 +353,8 @@ async function enviarNomes(id){
   if(!nomes.length) return erro("Escreva pelo menos um nome.");
   const curto=nomes.find(n=>n.split(" ").length<2); if(curto) return erro(`Falta o sobrenome de "${curto}".`);
   const f=FESTAS.find(x=>x.id===id),p=perfilMem||lerPerfil(),b=document.querySelector("[data-enviar]");b.disabled=true;b.textContent="Enviando…";
-  try{await fetch(VIP_ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({festa:f.nome,data:f.inicio,nomes,...p})});abrirVip(id,"ok",nomes.length)}
+  try{const r=await fetch(VIP_ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({festa:f.nome,data:f.inicio,nomes,...p})});
+    const j=await r.json();if(!j.ok)throw new Error(j.erro);abrirVip(id,"ok",nomes.length)}
   catch(_){b.disabled=false;b.textContent="Colocar na lista";erro("Não consegui enviar agora. Confira a internet e tente de novo.")}
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharVip()});
