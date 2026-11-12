@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>João Siqueira convida!</title>
+<meta name="description" content="As festas da semana em São Paulo, com Lista VIP e ingresso com desconto.">
+<meta name="theme-color" content="#0c0b0a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="João Siqueira convida!">
+<meta property="og:description" content="As festas da semana, com Lista VIP e ingresso com desconto.">
+<meta property="og:image" content="https://jonnesrp.github.io/festas/capa.jpg">
+<meta property="og:url" content="https://jonnesrp.github.io/festas/">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: app de uma coluna. Home = destaque grande, carrossel "Esta semana", lista compacta "Próximas". Toque abre a página da festa com barra fixa embaixo. */
+:root{
+  --bg:#0c0b0a; --surface:#171513; --surface-2:#221f1b; --line:#2f2a24;
+  --fg:#f4efe7; --muted:#a39a8d; --gold:#e3b54f; --gold-ink:#1a1407; --red:#ff6b5b;
+  --display:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;margin:0}
+.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:30px;padding-block:12px 56px}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h2{font-family:var(--display);font-weight:800;font-size:22px;margin:0 0 12px;letter-spacing:-.01em}
+
+.draft{background:var(--surface-2);border:1px dashed var(--line);color:var(--muted);font-size:12.5px;padding:8px 12px;border-radius:10px}
+.draft b{color:var(--gold);font-weight:600}
+
+.top{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:auto;flex:none;object-fit:contain}
+.top h1{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.05;margin:0}
+.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.top .links{margin-left:auto;flex:none;display:flex;gap:6px}
+.top .ig{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:50%}
+
+.when{color:var(--gold);font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums}
+.where{color:var(--muted);font-size:13.5px}
+.selos{display:flex;flex-wrap:wrap;gap:6px}
+.selo{font-size:11.5px;padding:3px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.selo.esg{color:var(--red)}
+.ph{display:grid;place-items:center;font-family:var(--display);font-weight:800;color:var(--gold-ink);text-align:center;line-height:1;padding:8px;overflow:hidden;overflow-wrap:anywhere}
+
+/* destaque */
+.hero{display:block;background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.hero .img{position:relative}
+.hero img,.hero .ph{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;max-width:100%;font-size:40px}
+.ribbon{position:absolute;top:12px;right:12px;background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:6px}
+.hero .txt{padding:14px 16px 16px;display:flex;flex-direction:column;gap:3px}
+.hero .name{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.05;margin:0}
+
+/* carrossel */
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,62%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none;
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));scroll-padding-left:max(16px,env(safe-area-inset-left,0px))}
+.slide{scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.slide .open{display:flex;flex-direction:column;text-align:left}
+.slide img,.slide .ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;font-size:26px}
+.slide .txt{padding:10px 12px 0;display:flex;flex-direction:column;gap:2px;min-width:0}
+.slide .name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide .foot{padding:10px 12px 12px;margin-top:auto}
+.mini{display:flex;align-items:center;justify-content:center;width:100%;min-height:40px;border-radius:10px;font-weight:600;font-size:13.5px}
+.mini.vip{border:1px solid var(--gold);color:var(--gold)}
+.mini.buy{background:var(--gold);color:var(--gold-ink)}
+.mini.off{background:var(--surface-2);color:var(--muted)}
+
+/* lista compacta */
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;text-align:left;width:100%}
+.row img,.row .ph{width:72px;height:72px;border-radius:10px;object-fit:cover;font-size:13px}
+.row .txt{min-width:0;display:flex;flex-direction:column;gap:1px}
+.row .name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-right:6px;color:var(--muted);font-size:12px;white-space:nowrap}
+.row .side b{color:var(--fg);font-size:13.5px;font-variant-numeric:tabular-nums}
+.row .chev{font-size:20px;line-height:1}
+.row .selos,.slide .selos{margin-top:4px}
+.row.out,.slide.out{opacity:.6}
+.row .vipdot{font-size:11px;color:var(--gold);font-weight:600}
+.aviso{display:inline-flex;align-self:flex-start;background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:11.5px;padding:3px 8px;border-radius:6px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chip{flex:none;min-height:40px;border:1px solid var(--line);padding:0 14px;border-radius:999px;font-size:13.5px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:600}
+.empty{color:var(--muted);font-size:14px;margin:0}
+.month{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px;font-weight:600}
+
+.cta{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600}
+.note{color:var(--muted);font-size:12.5px;text-align:center;margin:0}
+
+/* página da festa */
+.page{position:fixed;inset:0;background:var(--bg);z-index:20;overflow-y:auto;padding-top:env(safe-area-inset-top,0px)}
+.page .inner{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding-block:12px 140px}
+.bar-top{display:flex;justify-content:space-between;align-items:center}
+.circle{width:40px;height:40px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:18px}
+.page img.flyer{height:auto;aspect-ratio:auto}
+.page .flyer{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:18px;display:block;max-width:100%;font-size:48px}
+.page h3{font-family:var(--display);font-weight:800;font-size:30px;line-height:1.05;margin:0;text-wrap:balance}
+.info{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.info .t{color:var(--gold);font-weight:600}
+.info .s{color:var(--muted);font-size:13.5px}
+.info .acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px}
+.desc{margin:0;opacity:.9}
+.rules{border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:25;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sticky .in{max-width:560px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.sticky .price{flex:none;display:flex;flex-direction:column;font-size:12px;color:var(--muted);line-height:1.2}
+.sticky .price b{color:var(--fg);font-size:17px;font-variant-numeric:tabular-nums}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;padding:8px 10px}
+.btn.buy{background:var(--gold);color:var(--gold-ink)}
+.btn.vip{border:1px solid var(--gold);color:var(--gold)}
+.btn.ghost{background:var(--surface-2);color:var(--fg)}
+.btn[disabled]{opacity:.5}
+
+/* Lista VIP */
+.sheet-bg{position:fixed;inset:0;background:rgb(0 0 0 / .65);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.sheet{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;
+  padding:20px max(18px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:92%;overflow:auto}
+.sheet h3{font-family:var(--display);font-weight:800;font-size:22px;margin:0;line-height:1.1}
+.sheet .rules{background:var(--surface-2);border-radius:12px;padding:12px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+.sheet label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.sheet input[type=text],.sheet input[type=tel],.sheet textarea{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:11px 12px;font:inherit;font-size:16px;width:100%}
+.sheet textarea{min-height:110px;resize:vertical}
+.sheet .check{flex-direction:row;align-items:flex-start;gap:10px}
+.sheet .check input{margin-top:2px;width:18px;height:18px;flex:none}
+.sheet .line{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.linkish{color:var(--gold);font-size:13px;text-decoration:underline;min-height:32px}
+.sheet .btn{flex:none;width:100%}
+.done{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.done .big{font-size:40px;line-height:1;color:var(--gold)}
+.err{color:var(--red);font-size:13px;margin:0}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:40;max-width:calc(100% - 32px);text-align:center}
+@media (prefers-reduced-motion:no-preference){.page{animation:in .2s ease-out}@keyframes in{from{transform:translateY(16px)}}}
+</style>
+</head>
+<body>
+<div class="pad"><div class="wrap">
+  <div class="top">
+    <img class="logo" src="logo.png" width="44" height="44" alt="Logo JS">
+    <div><h1>João Siqueira convida!</h1><p>Encontros com alma. Memórias pra vida!</p></div>
+    <div class="links"><a class="ig" href="https://instagram.com/jonnes" target="_blank" rel="noopener" aria-label="Instagram @jonnes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a><a class="ig" href="https://whatsapp.com/channel/0029VbDE0MF0QeapPhq5eY2O" target="_blank" rel="noopener" aria-label="Canal do Jonnes no WhatsApp"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M9 8.5c-.3 2.6 3.2 6.300 6.300 6.300l1-1.300-2-1.200-.8.800c-1-.5-1.800-1.300-2.300-2.300l.8-.8L10.300 8z" fill="currentColor" stroke="none"/></svg></a></div>
+  </div>
+
+  <section id="hero" aria-label="Destaque"></section>
+  <div class="chips" id="chips" role="toolbar" aria-label="Filtrar por estilo"></div>
+  <section id="secSemana"><h2>Esta semana</h2><div class="rail" id="rail"></div></section>
+  <section id="secProx"><h2>Próximas</h2><div class="list" id="list"></div></section>
+
+  <a class="cta" href="https://whatsapp.com/channel/0029VbDE0MF0QeapPhq5eY2O" target="_blank" rel="noopener">Receber a agenda toda terça no WhatsApp</a>
+</div></div>
+
+<div id="pageRoot"></div>
+<div id="sheetRoot"></div>
+
+<script src="dados.js"></script>
+<script>
+// As festas vêm da planilha "Site - Festas" (lida ao vivo). dados.js é só uma cópia de reserva.
+const PLANILHA="1JVHsvlKl9VrYhiRwuzt8B_21SmFlOmJJl0F4Cv-JveA";
+// Fase 3: endereço do Apps Script que grava a Lista VIP na planilha. Vazio = lista pelo formulário da coluna "Link da lista VIP".
+const VIP_ENDPOINT="";
+// flyers na pasta flyers/; a coluna "Flyer (link)" da planilha tem prioridade
+const FLYER={"cardume-nye-27":["cardume","50% 35%","50% 68%"],"fua-quinta-de-verao":["fua"],"fua-ultimate-pop":["fuafoto","40% 50%"],"lets-up-5-anos":["letsup","50% 20%"],"cha-da-alice-verao":["cha","50% 22%"],"furduncinho":["furd","50% 30%"],"he-she-they-apresenta-cristobal-pesce":["hst"],"rush":["rush"],"sambalaia":["sambalaia"],"cardume-verano":["verano","50% 40%"],"festa-javali-14-anos":["javali"],"rupaul-ao-vivo":["rupaul","50% 30%"],"ensaios-da-anitta-2027":["anitta","70% 30%"]};
+const slug=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const simV=v=>/^s(im)?$/i.test(String(v||"").trim());
+const dataISO=v=>{const m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(v||"").trim());return m?`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`:null};
+const dinheiro=v=>{v=String(v??"").trim();if(!v)return"";const n=Number(v.replace(/\./g,"").replace(",","."));return isNaN(n)?v:n.toFixed(2).replace(".",",")};
+// lê pelo nome da coluna (linha 1 da planilha), então a ordem das colunas pode mudar
+function festasDaPlanilha(linhas){
+  const cab=linhas[0].map(h=>slug(String(h)));
+  const col=n=>cab.findIndex(h=>h.startsWith(n));
+  const K={nome:col("festa"),inicio:col("data-inicio"),fim:col("data-fim"),hora:col("hora-inicio"),horaFim:col("hora-fim"),local:col("local"),end:col("endereco"),selos:col("estilos"),desc:col("descricao"),plataforma:col("plataforma"),link:col("link-do-ingresso"),cupom:col("cupom"),desconto:col("desconto"),preco:col("preco"),vip:col("lista-vip"),vipAte:col("vip-ate"),vipExtra:col("regra-extra"),vipLink:col("link-da-lista"),destaque:col("destaque"),esgotado:col("esgotado"),aviso:col("aviso"),foto:col("flyer")};
+  return linhas.slice(1).filter(l=>String(l[K.nome]||"").trim()).map(l=>{const c=k=>K[k]<0?"":String(l[K[k]]??"").trim();const id=slug(c("nome"));const fl=FLYER[id]||[];
+    return {id,nome:c("nome"),inicio:dataISO(c("inicio")),fim:dataISO(c("fim")),hora:c("hora"),horaFim:c("horaFim"),
+      local:c("local"),end:c("end")||c("local"),selos:c("selos").split(",").map(x=>x.trim()).filter(Boolean),desc:c("desc"),plataforma:c("plataforma"),
+      link:c("link")||"#",cupom:c("cupom"),desconto:c("desconto"),preco:dinheiro(c("preco")),vip:simV(c("vip")),vipLink:c("vipLink"),vipAte:c("vipAte"),vipExtra:c("vipExtra"),
+      destaque:simV(c("destaque")),esgotado:simV(c("esgotado")),aviso:c("aviso"),
+      img:c("foto")?null:fl[0]||null,foto:c("foto"),pos:fl[1],posHero:fl[2],cor:"#3a332b"}});
+}
+let FESTAS = [];
+function csv(t){const L=[];let l=[],c="",q=false;for(let i=0;i<t.length;i++){const x=t[i];
+  if(q){if(x==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=x}
+  else if(x==='"')q=true;else if(x===","){l.push(c);c=""}else if(x==="\n"){l.push(c);L.push(l);l=[];c=""}else if(x!=="\r")c+=x}
+  if(c||l.length){l.push(c);L.push(l)} return L}
+const valida=L=>Array.isArray(L)&&L.length>1&&L[0].some(h=>slug(String(h))==="festa")&&L[0].some(h=>slug(String(h)).startsWith("data-inicio"));
+function usar(L){FESTAS=festasDaPlanilha(L);render();rota()}
+async function carregar(){
+  let guardada=null;try{guardada=JSON.parse(localStorage.getItem("jonnes-festas")||"null")}catch(_){}
+  usar(valida(guardada)?guardada:LINHAS_COPIA);
+  for(const u of [`https://docs.google.com/spreadsheets/d/${PLANILHA}/export?format=csv`,`https://docs.google.com/spreadsheets/d/${PLANILHA}/gviz/tq?tqx=out:csv&headers=1`]){
+    try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)continue;const L=csv(await r.text());if(!valida(L))continue;
+      try{localStorage.setItem("jonnes-festas",JSON.stringify(L))}catch(_){}
+      if(!document.getElementById("sheetRoot").innerHTML)usar(L);return}catch(_){}
+  }
+}
+const AGORA=new Date();
+const HOJE=new Date(AGORA.getFullYear(),AGORA.getMonth(),AGORA.getDate(),12);
+const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const MESF=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const DIA=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const d=s=>new Date(s+"T12:00:00");
+const p2=n=>String(n).padStart(2,"0");
+const curta=s=>`${p2(d(s).getDate())}/${p2(d(s).getMonth()+1)}`;
+function quando(f){ if(!f.inicio) return "Data a confirmar"; if(f.fim) return `${curta(f.inicio)} → ${curta(f.fim)}`; const x=d(f.inicio); if(iso(x)===iso(HOJE)) return `Hoje${f.hora?" · "+f.hora:""}`; return `${DIA[x.getDay()]}, ${x.getDate()} de ${MESF[x.getMonth()].toLowerCase()}${f.hora?" · "+f.hora:""}`; }
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pic=(f,cls="")=>(f.img||f.foto)?`<img class="${cls}" style="object-position:${f.pos||"50% 50%"}" src="${esc(f.foto||`flyers/${f.img}.jpg`)}" alt="Flyer ${esc(f.nome)}" loading="lazy">`:`<div class="${cls} ph" style="background:${f.cor}" aria-hidden="true">${esc(f.nome.split(" ")[0])}</div>`;
+const hnum=h=>{const m=/^(\d+)h(\d+)?$/.exec(h||"");return m?+m[1]+(+m[2]||0)/60:null};
+const iso=x=>`${x.getFullYear()}-${p2(x.getMonth()+1)}-${p2(x.getDate())}`;
+// quando a festa acaba de verdade (vira a madrugada => dia seguinte)
+function termina(f){const x=d(f.fim||f.inicio);const a=hnum(f.hora),b=hnum(f.horaFim);
+  if(f.fim){x.setHours(b??23,b==null?59:0,0,0);return x}
+  if(b!=null&&a!=null&&b<a){x.setDate(x.getDate()+1);x.setHours(Math.floor(b),(b%1)*60,0,0);return x}
+  if(b!=null){x.setHours(Math.floor(b),(b%1)*60,0,0);return x}
+  x.setDate(x.getDate()+1);x.setHours(6,0,0,0);return x}
+const selosCurto=f=>`<div class="selos">${f.selos.slice(0,2).map(s=>`<span class="selo">${esc(s)}</span>`).join("")}${f.selos.includes("+18")&&f.selos.indexOf("+18")>1?'<span class="selo">+18</span>':""}${f.esgotado?'<span class="selo esg">Esgotado</span>':""}</div>`;
+let filtro="Todas";
+const selos=f=>`<div class="selos">${f.selos.map(s=>`<span class="selo">${esc(s)}</span>`).join("")}${f.esgotado?'<span class="selo esg">Esgotado</span>':""}</div>`;
+
+const temVip=f=>!!(VIP_ENDPOINT||f.vipLink);
+const vipBtn=(f,cls,txt)=>VIP_ENDPOINT?`<button class="${cls} vip" data-vip="${f.id}">${txt}</button>`:`<a class="${cls} vip" href="${esc(f.vipLink)}" target="_blank" rel="noopener">${txt}</a>`;
+function miniBtn(f){
+  if(f.esgotado) return `<span class="mini off">Esgotado</span>`;
+  if(f.vip&&temVip(f)) return vipBtn(f,"mini",`Lista VIP${f.vipAte?" até "+esc(f.vipAte):""}`);
+  if(f.cupom||f.link==="#"||f.vip) return `<button class="mini buy" data-open="${f.id}">${f.cupom?"Ver cupom":"Ver ingresso"}</button>`;
+  return `<a class="mini buy" href="${esc(f.link)}" target="_blank" rel="noopener">${f.desconto?"Ingresso com desconto":"Comprar ingresso"}</a>`;
+}
+function linha(f){return `<a class="row${f.esgotado?" out":""}" href="#${f.id}">${pic(f)}<div class="txt"><span class="name">${esc(f.nome)}</span><span class="when">${esc(quando(f))}</span><span class="where">${esc(f.local)}</span>${selosCurto(f)}</div><span class="side">${f.vip?'<span class="vipdot">Lista VIP</span>':""}${f.preco&&!f.esgotado?`<span>a partir de</span><b>R$ ${esc(f.preco)}</b>`:""}<span class="chev" aria-hidden="true">›</span></span></a>`}
+function render(){
+  const ativos=FESTAS.filter(f=>f.inicio&&termina(f)>AGORA).sort((a,b)=>a.inicio.localeCompare(b.inicio)||(hnum(a.hora)||0)-(hnum(b.hora)||0));
+  const estilos=[...new Set(ativos.flatMap(f=>f.selos))].filter(x=>!["+18","2 pistas","DJ set","Vários estilos","Réveillon"].includes(x));
+  document.getElementById("chips").innerHTML=["Todas",...estilos].map(x=>`<button class="chip" aria-pressed="${x===filtro}" data-chip="${esc(x)}">${esc(x)}</button>`).join("");
+  const vis=ativos.filter(f=>filtro==="Todas"||f.selos.includes(filtro));
+  const h=ativos.find(f=>f.destaque);
+  document.getElementById("hero").innerHTML=h?`<a class="hero" href="#${h.id}"><div class="img">${pic({...h,pos:h.posHero||h.pos})}<span class="ribbon">Destaque</span></div><div class="txt"><span class="when">${esc(quando(h))}</span><p class="name">${esc(h.nome)}</p><span class="where">${esc(h.local)}</span></div></a>`:"";
+  const dom=new Date(HOJE); dom.setDate(HOJE.getDate()+(7-HOJE.getDay())%7); dom.setHours(23,59);   // domingo desta semana
+  const dom2=new Date(dom); dom2.setDate(dom.getDate()+7);
+  const resto=vis.filter(f=>!f.destaque);
+  const semana=resto.filter(f=>d(f.inicio)<=dom).sort((a,b)=>(!!a.esgotado)-(!!b.esgotado));
+  document.getElementById("secSemana").hidden=!semana.length;
+  document.getElementById("rail").innerHTML=semana.map(f=>`<article class="slide${f.esgotado?" out":""}"><a class="open" href="#${f.id}">${pic(f)}<div class="txt"><span class="name">${esc(f.nome)}</span><span class="when">${esc(quando(f))}</span><span class="where">${esc(f.local)}</span>${selosCurto(f)}${f.aviso?`<span class="aviso">${esc(f.aviso)}</span>`:""}</div></a><div class="foot">${miniBtn(f)}</div></article>`).join("");
+  let last="",out="";
+  resto.filter(f=>d(f.inicio)>dom).sort((a,b)=>(d(a.inicio)<=dom2&&d(b.inicio)<=dom2)?(!!a.esgotado)-(!!b.esgotado):0).forEach(f=>{const x=d(f.inicio);
+    const g=x<=dom2?"Semana que vem":MESF[x.getMonth()]+(x.getFullYear()!==HOJE.getFullYear()?" "+x.getFullYear():"");
+    if(g!==last){last=g;out+=`<div class="month">${g}</div>`}
+    out+=linha(f)});
+  document.getElementById("list").innerHTML=out||`<p class="empty">Nenhuma outra festa de ${esc(filtro)} por enquanto.</p>`;
+}
+
+function pagina(id){
+  const f=FESTAS.find(x=>x.id===id); const root=document.getElementById("pageRoot");
+  if(!f){root.innerHTML="";document.body.style.overflow="";return}
+  const horario=f.fim?`Começa ${curta(f.inicio)}, termina ${curta(f.fim)}`:(f.hora?`Início às ${f.hora}${f.horaFim?", término às "+f.horaFim:""}`:"Horário a confirmar");
+  let sticky="";
+  if(f.esgotado) sticky=`<button class="btn ghost" disabled>Esgotado · lista de espera na ${esc(f.plataforma)}</button>`;
+  else{
+    const price=f.preco?`<span class="price">a partir de<b>R$ ${f.preco}</b></span>`:"";
+    const vip=f.vip&&temVip(f)?vipBtn(f,"btn","Lista VIP"):"";
+    const buy=f.cupom?`<a class="btn buy" data-cupom="${esc(f.cupom)}" href="${esc(f.link)}" target="_blank" rel="noopener">Copiar cupom e comprar</a>`:`<a class="btn buy" href="${esc(f.link)}" target="_blank" rel="noopener">${vip?"Ingresso":(f.desconto?"Comprar com desconto":"Comprar ingresso")}</a>`;
+    sticky=(vip?"":price)+vip+(f.link==="#"?"":buy);
+  }
+  root.innerHTML=`<div class="page" role="dialog" aria-modal="true" aria-label="${esc(f.nome)}"><div class="pad"><div class="inner">
+    <div class="bar-top"><a class="circle" href="#" aria-label="Voltar">←</a><button class="circle" data-share="${f.id}" aria-label="Compartilhar esta festa">↗</button></div>
+    ${pic(f,"flyer")}
+    <div style="display:flex;flex-direction:column;gap:6px"><h3>${esc(f.nome)}</h3><span class="when">${esc(quando(f))}</span>${f.aviso?`<span class="aviso">${esc(f.aviso)}</span>`:""}${selos(f)}</div>
+    <p class="desc">${esc(f.desc)}</p>
+    ${f.vip?`<div class="info rules"><span class="t">Lista do @jonnes · VIP até ${esc(f.vipAte)}</span><span class="s">Sujeito à lotação da casa. ${esc(f.vipExtra||"")} Para validar, siga @jonnes no Instagram e diga "Lista do @jonnes" na portaria.</span></div>`:""}
+    ${f.cupom&&!f.esgotado?`<div class="info"><span class="t">Cupom ${esc(f.cupom)}</span><span class="s">Na ${esc(f.plataforma)} o cupom não entra sozinho: copie aqui e cole na hora de pagar para ganhar o desconto extra.</span></div>`:""}
+    <div class="info"><span class="t">${esc(quando(f))}</span><span class="s">${esc(horario)}</span></div>
+    <div class="info"><span class="t">${esc(f.local)}</span><span class="s">${esc(f.end)}</span><div class="acts"><button class="pill" data-copy="${esc(f.end)}">Copiar endereço</button><a class="pill" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.end)}" target="_blank" rel="noopener">Abrir no mapa</a></div></div>
+  </div></div></div>
+  <div class="sticky"><div class="in">${sticky}</div></div>`;
+  document.body.style.overflow="hidden"; root.querySelector(".page").scrollTop=0;
+}
+function rota(){pagina(location.hash.slice(1))}
+window.addEventListener("hashchange",rota);
+
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400)}
+function copiar(txt,ok){try{navigator.clipboard.writeText(txt).then(ok,ok)}catch(_){ok()}}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,a"); if(!t) return;
+  if(t.dataset.open){e.preventDefault();location.hash=t.dataset.open;return}
+  if(t.dataset.chip){filtro=t.dataset.chip;render();return}
+  if(t.dataset.vip){e.preventDefault();abrirVip(t.dataset.vip);return}
+  if(t.hasAttribute("data-close")){fecharVip();return}
+  if(t.hasAttribute("data-trocar")){abrirVip(t.dataset.trocar,"perfil");return}
+  if(t.hasAttribute("data-perfil")){salvarPerfil(t.dataset.perfil);return}
+  if(t.hasAttribute("data-enviar")){enviarNomes(t.dataset.enviar);return}
+  if(t.dataset.cupom){copiar(t.dataset.cupom,()=>toast(`Cupom ${t.dataset.cupom} copiado. Cole na hora de pagar.`));if(t.getAttribute("href")==="#")e.preventDefault();return}
+  if(t.dataset.copy){copiar(t.dataset.copy,()=>toast("Endereço copiado"));return}
+  if(t.dataset.share){const f=FESTAS.find(x=>x.id===t.dataset.share);const dados={title:f.nome,text:`${f.nome} · ${quando(f)} · ${f.local}`,url:location.href};
+    const cai=()=>copiar(location.href,()=>toast("Link da festa copiado para mandar no WhatsApp"));
+    try{navigator.share?navigator.share(dados).catch(cai):cai()}catch(_){cai()} return}
+});
+
+// ---------- Lista VIP: cadastro uma vez só, lembrado neste celular ----------
+const CHAVE="jonnes-cadastro";
+function lerPerfil(){try{return JSON.parse(localStorage.getItem(CHAVE)||"null")}catch(_){return null}}
+function gravarPerfil(p){try{localStorage.setItem(CHAVE,JSON.stringify(p))}catch(_){} perfilMem=p}
+let perfilMem=null;
+function fecharVip(){document.getElementById("sheetRoot").innerHTML=""}
+function abrirVip(id,etapa,extra){
+  const f=FESTAS.find(x=>x.id===id); const p=perfilMem||lerPerfil(); etapa=etapa||(p?"nomes":"perfil");
+  const head=`<div class="line"><span>Lista do @jonnes</span><button class="linkish" data-close>Fechar</button></div><h3>${esc(f.nome)}</h3>
+    <div class="rules"><span><b>${esc(quando(f))}</b> · ${esc(f.local)}</span><span>VIP até ${esc(f.vipAte)}, sujeito à lotação da casa.</span>${f.vipExtra?`<span>${esc(f.vipExtra)}</span>`:""}<span>Para validar, siga @jonnes no Instagram.</span></div>`;
+  let html="";
+  if(etapa==="perfil"){
+    html=head+`<p style="margin:0">Seu cadastro, uma vez só. Nas próximas festas ele já vem preenchido neste celular.</p>
+      <label for="vNome">Seu nome e sobrenome<input id="vNome" type="text" autocomplete="name" value="${esc(p?.nome||"")}"></label>
+      <label for="vIg">Seu Instagram<input id="vIg" type="text" placeholder="@seuinsta" autocapitalize="none" value="${esc(p?.ig||"")}"></label>
+      <label for="vWa">Seu WhatsApp<input id="vWa" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" value="${esc(p?.wa||"")}"></label>
+      <label class="check" for="vAg"><input id="vAg" type="checkbox" ${p&&!p.agenda?"":"checked"}><span>Quero receber a agenda semanal de festas do Jonnes no WhatsApp</span></label>
+      <p class="err" id="vErr" hidden></p>
+      <button class="btn buy" data-perfil="${f.id}">Salvar e continuar</button>
+      <p class="note" style="text-align:left">Seus dados ficam só com o Jonnes, para a lista e a agenda. Você pode pedir para apagar quando quiser.</p>`;
+  } else if(etapa==="nomes"){
+    html=head+`<div class="line"><span>Oi, <b style="color:var(--fg)">${esc(p.nome.split(" ")[0])}</b> (${esc(p.ig)})</span><button class="linkish" data-trocar="${f.id}">Não sou eu</button></div>
+      <label for="vNomes">Nomes e sobrenomes, um embaixo do outro<textarea id="vNomes">${esc(p.nome)}\n</textarea></label>
+      <p class="err" id="vErr" hidden></p>
+      <button class="btn buy" data-enviar="${f.id}">Colocar na lista</button>`;
+  } else {
+    html=`<div class="done"><div class="big" aria-hidden="true">✓</div><h3>${extra} ${extra>1?"nomes":"nome"} na lista</h3>
+      <p style="margin:0;color:var(--muted)">${esc(f.nome)} · ${esc(quando(f))}<br>Na portaria, diga que está na <b style="color:var(--fg)">Lista do @jonnes</b>. VIP até ${esc(f.vipAte)}.</p>
+      <a class="btn buy" href="${esc(f.link)}" target="_blank" rel="noopener">Quer garantir a entrada? Ingresso com ${esc(f.desconto||"desconto")}</a>
+      <button class="btn ghost" data-vip="${f.id}">Mandar mais nomes</button><button class="linkish" data-close>Fechar</button></div>`;
+  }
+  document.getElementById("sheetRoot").innerHTML=`<div class="sheet-bg"><div class="sheet" role="dialog" aria-modal="true" aria-label="Lista VIP">${html}</div></div>`;
+}
+function erro(m){const e=document.getElementById("vErr");e.textContent=m;e.hidden=false}
+function salvarPerfil(id){
+  const nome=document.getElementById("vNome").value.trim().replace(/\s+/g," "); let ig=document.getElementById("vIg").value.trim().replace(/\s/g,""); const wa=document.getElementById("vWa").value.replace(/\D/g,"");
+  if(nome.split(" ").length<2) return erro("Escreva nome e sobrenome.");
+  if(ig.replace("@","").length<2) return erro("Escreva seu Instagram.");
+  if(wa.length<10||wa.length>13) return erro("Confira o WhatsApp, com DDD.");
+  if(!ig.startsWith("@")) ig="@"+ig;
+  gravarPerfil({nome,ig,wa,agenda:document.getElementById("vAg").checked}); abrirVip(id,"nomes");
+}
+async function enviarNomes(id){
+  const nomes=[...new Set(document.getElementById("vNomes").value.split(/[\n,;]+/).map(x=>x.trim().replace(/\s+/g," ")).filter(Boolean))];
+  if(!nomes.length) return erro("Escreva pelo menos um nome.");
+  const curto=nomes.find(n=>n.split(" ").length<2); if(curto) return erro(`Falta o sobrenome de "${curto}".`);
+  const f=FESTAS.find(x=>x.id===id),p=perfilMem||lerPerfil(),b=document.querySelector("[data-enviar]");b.disabled=true;b.textContent="Enviando…";
+  try{await fetch(VIP_ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify({festa:f.nome,data:f.inicio,nomes,...p})});abrirVip(id,"ok",nomes.length)}
+  catch(_){b.disabled=false;b.textContent="Colocar na lista";erro("Não consegui enviar agora. Confira a internet e tente de novo.")}
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharVip()});
+carregar();
+</script>
+</body>
+</html>
