@@ -170,6 +170,9 @@ footer .draft b{color:var(--gold)}
 .info .s{color:var(--muted);font-size:13.5px}
 .info .acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .mapa{width:100%;height:220px;border:0;border-radius:12px;margin-top:10px;background:var(--surface-2);display:block}
+.cookies{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;max-width:560px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;box-shadow:0 10px 30px rgb(0 0 0 / .5)}
+.cookies span{flex:1 1 100%}
+.cookies .btn{flex:1;min-height:42px;border-radius:12px;font-size:14px}
 .pill{border:1px solid var(--line);border-radius:999px;padding:0 14px;min-height:38px;display:inline-flex;align-items:center;font-size:13px}
 .desc{margin:0;opacity:.9}
 .rules{border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
@@ -209,7 +212,7 @@ footer .draft b{color:var(--gold)}
   <nav aria-label="Principal">
     <a class="txt" href="#agenda">Agenda</a>
     <a class="txt" href="#como">Como funciona</a>
-    <a class="txt" data-canal href="#" target="_blank" rel="noopener">Canal</a>
+    <a class="txt" data-canal="topo" href="#" target="_blank" rel="noopener">Canal</a>
     <button class="btn gold canal" id="contaBtn" data-conta></button>
   </nav>
 </div></div></header>
@@ -221,7 +224,7 @@ footer .draft b{color:var(--gold)}
       <p class="eyebrow">Curadoria de noites · São Paulo</p>
       <h1>Festas que valem <em>sair de casa</em></h1>
       <p class="sub">Agenda, descontos e listas VIP, tudo no mesmo lugar.</p>
-      <div class="acts"><a class="btn gold" href="#agenda">Ver agenda</a><a class="btn line" data-canal href="#" target="_blank" rel="noopener">Entrar no canal</a></div>
+      <div class="acts"><a class="btn gold" href="#agenda">Ver agenda</a><a class="btn line" data-canal="capa" href="#" target="_blank" rel="noopener">Entrar no canal</a></div>
     </div></div>
   </div>
 
@@ -246,7 +249,7 @@ footer .draft b{color:var(--gold)}
         <p class="eyebrow">Canal no WhatsApp</p>
         <h2 id="hCanal">A agenda da semana, toda terça, no seu WhatsApp</h2>
         <p>Festas novas, listas que abriram e cupons antes de esgotar. Sem grupo, sem spam: é só seguir o canal.</p>
-        <a class="btn gold" data-canal href="#" target="_blank" rel="noopener">Entrar no canal</a>
+        <a class="btn gold" data-canal="bloco" href="#" target="_blank" rel="noopener">Entrar no canal</a>
       </div>
     </section>
 
@@ -287,6 +290,20 @@ const RASCUNHO=false;                     // true = rascunho: conta e lista fica
 // Endereço do Apps Script da planilha (apps-script/Code.gs). Com ele, conta e Lista VIP gravam na planilha de verdade.
 const VIP_ENDPOINT="";
 const CONTA_ON=RASCUNHO||!!VIP_ENDPOINT;
+// Google Analytics (conta "João Siqueira convida", fluxo Site). Só liga no site publicado e respeita o aviso de cookies.
+const GA_ID=RASCUNHO?"":"G-H2K0G717HN";
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+function ev(nome,params){try{gtag("event",nome,params||{})}catch(_){}}
+if(GA_ID){
+  gtag("consent","default",{analytics_storage:"denied",ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied"});
+  let ok=null;try{ok=localStorage.getItem("jonnes-cookies")}catch(_){}
+  if(ok==="sim")gtag("consent","update",{analytics_storage:"granted"});
+  gtag("js",new Date());gtag("config",GA_ID);
+  const sc=document.createElement("script");sc.async=true;sc.src="https://www.googletagmanager.com/gtag/js?id="+GA_ID;document.head.appendChild(sc);
+  if(!ok)addEventListener("DOMContentLoaded",()=>{const b=document.createElement("div");b.className="cookies";b.setAttribute("role","region");b.setAttribute("aria-label","Cookies");
+    b.innerHTML='<span>Usamos cookies só para contar visitas e cliques do site.</span><button class="btn ghost" data-cookies="nao">Recusar</button><button class="btn gold" data-cookies="sim">Aceitar</button>';
+    document.body.appendChild(b)});
+}
 // Artes já no formato padrão 4:5 (1080x1350), feitas com artes/padronizar_arte.py
 const IMG={"anitta": "flyers/anitta.jpg", "cardume": "flyers/cardume.jpg", "cha": "flyers/cha.jpg", "fua": "flyers/fua.jpg", "fuafoto": "flyers/fuafoto.jpg", "furd": "flyers/furd.jpg", "hst": "flyers/hst.jpg", "javali": "flyers/javali.jpg", "letsup": "flyers/letsup.jpg", "rupaul": "flyers/rupaul.jpg", "rush": "flyers/rush.jpg", "sambalaia": "flyers/sambalaia.jpg", "verano": "flyers/verano.jpg"};
 // Cada linha = uma linha da planilha "Site - Festas" (no site publicado, lida direto da planilha)
@@ -360,7 +377,7 @@ function cupomBox(f){
 }
 function botoesCard(f){
   if(f.esgotado) return `<a class="btn ghost" href="#${f.id}">Ver detalhes</a>`;
-  const comprar=`<a class="btn ${f.vip?"line":"gold"}" href="${esc(f.link)}" target="_blank" rel="noopener">${f.vip?"Ingresso":(f.preco?`Ingresso · R$ ${esc(f.preco)}`:"Comprar ingresso")}</a>`;
+  const comprar=`<a class="btn ${f.vip?"line":"gold"}" data-comprar="${f.id}" data-onde="card" href="${esc(f.link)}" target="_blank" rel="noopener">${f.vip?"Ingresso":(f.preco?`Ingresso · R$ ${esc(f.preco)}`:"Comprar ingresso")}</a>`;
   if(f.vip) return `<button class="btn gold" data-vip="${f.id}">Lista VIP${f.vipAte?" até "+esc(f.vipAte):""}</button>${comprar}`;
   return `${comprar}<a class="btn ghost" href="#${f.id}" style="flex:none;padding:0 16px">Detalhes</a>`;
 }
@@ -385,13 +402,14 @@ function render(){
 function pagina(id){
   const f=FESTAS.find(x=>x.id===id); const root=document.getElementById("pageRoot");
   if(!f){root.innerHTML="";document.body.style.overflow="";return}
+  ev("ver_festa",{festa:f.nome});
   const horario=f.fim?`Começa ${curta(f.inicio)}, termina ${curta(f.fim)}`:(f.hora?`Início às ${f.hora}${f.horaFim?", término às "+f.horaFim:""}`:"Horário a confirmar");
   let sticky="";
   if(f.esgotado) sticky=`<button class="btn ghost" disabled>Esgotado · lista de espera na ${esc(f.plataforma)}</button>`;
   else{
     const price=f.preco&&!f.vip?`<span class="price">a partir de<b>R$ ${f.preco}</b></span>`:"";
     const vip=f.vip?`<button class="btn gold" data-vip="${f.id}">Lista VIP</button>`:"";
-    const buy=`<a class="btn ${f.vip?"line":"gold"}" ${f.cupom&&!f.cupom.noLink?`data-cupom="${esc(f.cupom.cod)}"`:""} href="${esc(f.link)}" target="_blank" rel="noopener">${f.vip?"Ingresso":(f.cupom&&!f.cupom.noLink?"Copiar cupom e comprar":(f.cupom||f.desconto?"Comprar com desconto":"Comprar ingresso"))}</a>`;
+    const buy=`<a class="btn ${f.vip?"line":"gold"}" data-comprar="${f.id}" data-onde="pagina" ${f.cupom&&!f.cupom.noLink?`data-cupom="${esc(f.cupom.cod)}"`:""} href="${esc(f.link)}" target="_blank" rel="noopener">${f.vip?"Ingresso":(f.cupom&&!f.cupom.noLink?"Copiar cupom e comprar":(f.cupom||f.desconto?"Comprar com desconto":"Comprar ingresso"))}</a>`;
     sticky=price+vip+buy;
   }
   root.innerHTML=`<div class="page" role="dialog" aria-modal="true" aria-label="${esc(f.nome)}"><div class="pad"><div class="inner">
@@ -416,7 +434,14 @@ function copiar(txt,ok){try{navigator.clipboard.writeText(txt).then(ok,ok)}catch
 document.addEventListener("click",e=>{
   if(e.target.hasAttribute&&e.target.hasAttribute("data-fundo")){fecharVip();return}
   const t=e.target.closest("button,a"); if(!t) return;
-  if(t.dataset.chip){filtro=t.dataset.chip;render();return}
+  if(t.dataset.cookies){try{localStorage.setItem("jonnes-cookies",t.dataset.cookies)}catch(_){} if(t.dataset.cookies==="sim")gtag("consent","update",{analytics_storage:"granted"}); t.closest(".cookies").remove(); return}
+  if(t.dataset.comprar){const f=FESTAS.find(x=>x.id===t.dataset.comprar);ev("comprar_ingresso",{festa:f.nome,plataforma:f.plataforma,onde:t.dataset.onde})}
+  if(t.dataset.canal!==undefined)ev("entrar_canal",{onde:t.dataset.canal||"?"});
+  if(t.dataset.vip)ev("abrir_lista_vip",{festa:(FESTAS.find(x=>x.id===t.dataset.vip)||{}).nome});
+  if(t.dataset.cupom)ev("copiar_cupom",{cupom:t.dataset.cupom});
+  if(t.dataset.share)ev("compartilhar",{festa:(FESTAS.find(x=>x.id===t.dataset.share)||{}).nome});
+  if(t.id==="igLink"||t.id==="igLink2")ev("abrir_instagram",{perfil:t.textContent.trim()});
+  if(t.dataset.chip){filtro=t.dataset.chip;ev("filtrar_data",{data:filtro});render();return}
   if(t.dataset.vip){e.preventDefault();const f=FESTAS.find(x=>x.id===t.dataset.vip);if(!CONTA_ON&&f.vipLink){window.open(f.vipLink,"_blank","noopener");return}abrirVip(t.dataset.vip);return}
   if(t.hasAttribute("data-close")){fecharVip();return}
   if(t.hasAttribute("data-conta")){abrirConta();return}
@@ -545,13 +570,13 @@ async function cadastrar(aba){
   const dados={nome,ig,wa,email,agenda:document.getElementById("vAg").checked};
   if(aba!=="editar"){dados.senha=document.getElementById("vSenha").value; if(dados.senha.length<6) return erro("A senha precisa ter pelo menos 6 caracteres.")}
   const j=await chamar(document.querySelector("[data-cadastrar]"),aba==="editar"?"editar":"cadastrar",dados); if(!j) return;
-  gravarSessao(j); ls.set("jonnes-ja-teve-conta","1"); pintarConta(); seguir(aba==="editar"?"Dados salvos":"Conta criada!");
+  gravarSessao(j); ls.set("jonnes-ja-teve-conta","1"); pintarConta(); if(aba!=="editar")ev("sign_up",{method:"site"}); seguir(aba==="editar"?"Dados salvos":"Conta criada!");
 }
 async function entrar(){
   const login=document.getElementById("cLogin").value.trim().toLowerCase(), senha=document.getElementById("cSenha").value;
   if(!login||!senha) return erro("Preencha o WhatsApp (ou e-mail) e a senha.");
   const j=await chamar(document.querySelector("[data-login]"),"entrar",{login,senha}); if(!j) return;
-  gravarSessao(j); ls.set("jonnes-ja-teve-conta","1"); pintarConta(); seguir(`Oi, ${j.conta.nome.split(" ")[0]}!`);
+  gravarSessao(j); ls.set("jonnes-ja-teve-conta","1"); pintarConta(); ev("login",{method:"site"}); seguir(`Oi, ${j.conta.nome.split(" ")[0]}!`);
 }
 function seguir(msg){const id=depoisDoLogin;depoisDoLogin=null;if(id)abrirVip(id);else fecharVip();toast(msg)}
 function sair(){ls.del(CHAVE_SESSAO);pintarConta();fecharVip();toast("Você saiu da conta")}
@@ -570,7 +595,7 @@ function abrirVip(id,etapa,extra){
   } else {
     html=`<div class="done"><div class="big" aria-hidden="true">✓</div><h3>${extra} ${extra>1?"nomes":"nome"} na lista</h3>
       <p style="margin:0;color:var(--muted)">${esc(f.nome)} · ${esc(quandoLongo(f))}<br>Na portaria, diga que está na <b style="color:var(--fg)">Lista do Jonnes</b>. VIP até ${esc(f.vipAte)}.</p>
-      <a class="btn gold" href="${esc(f.link)}" target="_blank" rel="noopener">${f.cupom||f.desconto?"Garantir ingresso com desconto":"Garantir ingresso"}</a>
+      <a class="btn gold" data-comprar="${f.id}" data-onde="lista-vip" href="${esc(f.link)}" target="_blank" rel="noopener">${f.cupom||f.desconto?"Garantir ingresso com desconto":"Garantir ingresso"}</a>
       <button class="btn ghost" data-vip="${f.id}">Mandar mais nomes</button><button class="linkish" data-close>Fechar</button></div>`;
   }
   abrirSheet(html,"Lista VIP");
@@ -581,7 +606,7 @@ function enviarNomes(id){
   if(!nomes.length) return erro("Escreva pelo menos um nome.");
   const curto=nomes.find(n=>n.split(" ").length<2); if(curto) return erro(`Falta o sobrenome de "${curto}".`);
   const f=FESTAS.find(x=>x.id===id);
-  chamar(document.querySelector("[data-enviar]"),"lista",{festa:f.nome,data:f.inicio,nomes}).then(j=>{if(j)abrirVip(id,"ok",nomes.length)});
+  chamar(document.querySelector("[data-enviar]"),"lista",{festa:f.nome,data:f.inicio,nomes}).then(j=>{if(j){ev("lista_vip_enviada",{festa:f.nome,nomes:nomes.length});abrirVip(id,"ok",nomes.length)}});
 }
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches(".sheet input:not([type=checkbox])")){e.preventDefault();const b=document.querySelector(".sheet .btn.gold");b&&b.click()}});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){fecharVip();if(document.querySelector(".page"))location.hash="agenda"}});
