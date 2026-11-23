@@ -24,7 +24,9 @@ const LINHAS_COPIA=[
 "Aviso",
 "Flyer (link)",
 "Lote",
-"% vendido"
+"% vendido",
+"Marca da festa",
+"Lista fecha em"
 ],
 [
 "Cardume NYE 27",
