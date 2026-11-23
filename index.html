@@ -296,7 +296,7 @@ const FOTO_SOBRE="sobre-jonnes.jpg";                   // foto do bloco "Por tr�
 const LOGO="logo.png";
 const RASCUNHO=false;                     // true = rascunho: conta e lista ficam só no celular
 // Endereço do Apps Script da planilha (apps-script/Code.gs). Com ele, conta e Lista VIP gravam na planilha de verdade.
-const VIP_ENDPOINT="";
+const VIP_ENDPOINT=RASCUNHO?"":"https://script.google.com/macros/s/AKfycbzWp8cNQLw1oH0Q-GArUseRsbfwYdYhMkVUIWj8UhSuxC5gag-oYvx5WVigrTMb6CZf8w/exec";
 const CONTA_ON=RASCUNHO||!!VIP_ENDPOINT;
 const ESTILOS=["Pop","Funk","Eletrônica","House e Techno","Sertanejo","Samba e Pagode","Axé e Brasilidades","Rock e Indie"];
 // Google Analytics (conta "João Siqueira convida", fluxo Site). Só liga no site publicado e respeita o aviso de cookies.
