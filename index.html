@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>João Siqueira convida!</title>
-<meta name="description" content="As festas da semana em São Paulo, com Lista VIP e ingresso com desconto.">
+<meta name="description" content="Festas que valem sair de casa: agenda, descontos e listas VIP em São Paulo.">
 <meta name="theme-color" content="#0c0b0a">
 <meta property="og:type" content="website">
 <meta property="og:title" content="João Siqueira convida!">
@@ -13,118 +13,174 @@
 <meta property="og:url" content="https://jonnesrp.github.io/Festas/">
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: app de uma coluna. Home = destaque grande, carrossel "Esta semana", lista compacta "Próximas". Toque abre a página da festa com barra fixa embaixo. */
+/* v3: capa editorial com foto P&B, agenda em cards 4:5 com filtro por data, selos, cupom, canal, 3 passos, "Por trás da lista". */
 :root{
-  --bg:#0c0b0a; --surface:#171513; --surface-2:#221f1b; --line:#2f2a24;
-  --fg:#f4efe7; --muted:#a39a8d; --gold:#e3b54f; --gold-ink:#1a1407; --red:#ff6b5b;
+  --bg:#0c0b0a; --surface:#161412; --surface-2:#211e1a; --line:#2f2a24;
+  --fg:#f4efe7; --muted:#a39a8d; --gold:#e3b54f; --gold-ink:#1a1407; --red:#ff6b5b; --green:#7fd39a;
   --display:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
   --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --head:60px;
+  --gx:max(16px,env(safe-area-inset-left,0px));
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--head) + 64px)}
 html,body{background:var(--bg)}
-body{color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;margin:0}
-.pad{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:30px;padding-block:12px 56px}
+body{color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;margin:0;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-h2{font-family:var(--display);font-weight:800;font-size:22px;margin:0 0 12px;letter-spacing:-.01em}
+img{max-width:100%}
+[hidden]{display:none!important}
+.pad{padding-left:var(--gx);padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:999px;font-weight:700;font-size:15px;padding:0 22px;text-align:center}
+.btn.gold{background:var(--gold);color:var(--gold-ink)}
+.btn.line{border:1px solid color-mix(in srgb,var(--fg) 35%,transparent);color:var(--fg)}
+.btn.ghost{background:var(--surface-2);color:var(--fg)}
+.btn[disabled]{opacity:.5;cursor:default}
 
-.draft{background:var(--surface-2);border:1px dashed var(--line);color:var(--muted);font-size:12.5px;padding:8px 12px;border-radius:10px}
-.draft b{color:var(--gold);font-weight:600}
+/* cabeçalho fixo: fundo sólido + blur, nada aparece por trás do texto */
+.head{position:fixed;top:0;left:0;right:0;z-index:30;height:calc(var(--head) + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);
+  background:rgb(12 11 10 / .94);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
+.head.scrolled{border-bottom-color:var(--line)}
+.head .wrap{height:var(--head);display:flex;align-items:center;gap:10px}
+.head .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.head .brand img{width:32px;height:auto}
+.head .brand b{font-family:var(--display);font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.head nav{margin-left:auto;display:flex;align-items:center;gap:4px;flex:none}
+.head nav a.txt{font-size:14px;color:var(--muted);padding:10px 10px;display:none}
+.head nav a.txt:hover{color:var(--fg)}
+.head .canal{min-height:38px;font-size:13.5px;padding:0 14px;white-space:nowrap}
+.head .canal.logado{background:var(--surface-2);color:var(--fg);padding:0 12px 0 5px;gap:8px}
+.av{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--gold);color:var(--gold-ink);font-weight:800;font-size:13px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.tabs button{min-height:40px;border-radius:9px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface-2);color:var(--fg)}
+.sheet input[type=email],.sheet input[type=password]{background:var(--bg);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:11px 12px;font:inherit;font-size:16px;width:100%}
+.perfil{background:var(--surface-2);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.perfil b{font-size:16px}
+.perfil span{color:var(--muted)}
+@media (min-width:640px){.head nav a.txt{display:inline-block}}
 
-.top{display:flex;align-items:center;gap:12px}
-.logo{width:44px;height:auto;flex:none;object-fit:contain}
-.top h1{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.05;margin:0}
-.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
-.top .links{margin-left:auto;flex:none;display:flex;gap:6px}
-.top .ig{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:50%}
+/* capa */
+.hero{position:relative;min-height:min(calc(100svh - 0px),860px);display:flex;align-items:flex-end;overflow:hidden;padding-top:calc(var(--head) + env(safe-area-inset-top,0px))}
+.hero .foto{position:absolute;inset:0;z-index:0}
+.hero .foto img{width:100%;height:100%;object-fit:cover;object-position:62% 18%;filter:grayscale(1) contrast(1.06) brightness(.92);display:block}
+.hero .foto .vazio{position:absolute;inset:0;background:radial-gradient(120% 80% at 70% 25%,#3a3631 0%,#1b1917 45%,var(--bg) 80%);display:grid;place-items:center}
+.hero .foto .vazio span{font-family:var(--display);font-weight:800;font-size:38vw;color:#ffffff0d;line-height:1}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgb(12 11 10 / .1) 0%,rgb(12 11 10 / 0) 30%,rgb(12 11 10 / .55) 58%,var(--bg) 92%)}
+.hero .txt{position:relative;z-index:2;width:100%;padding-bottom:40px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(46px,13.2vw,112px);line-height:.92;letter-spacing:-.035em;margin:14px 0 16px;text-wrap:balance;max-width:11ch}
+.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--gold);letter-spacing:-.01em}
+.hero .sub{font-size:clamp(16px,4.4vw,19px);color:color-mix(in srgb,var(--fg) 82%,transparent);margin:0 0 24px;max-width:30ch}
+.hero .acts{display:flex;gap:10px;flex-wrap:wrap}
+@media (min-width:860px){
+  .hero{align-items:center}
+  .hero .foto{left:42%}
+  .hero::after{background:linear-gradient(90deg,var(--bg) 40%,rgb(12 11 10 / .6) 52%,rgb(12 11 10 / 0) 70%),linear-gradient(180deg,rgb(12 11 10 / 0) 70%,var(--bg) 100%)}
+  .hero .txt{padding-bottom:0}
+}
 
-.when{color:var(--gold);font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums}
-.where{color:var(--muted);font-size:13.5px}
+/* agenda */
+section{padding-top:48px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,7vw,40px);letter-spacing:-.02em;line-height:1;margin:6px 0 0}
+.count{color:var(--muted);font-size:13.5px;white-space:nowrap}
+.chips-bar{position:sticky;top:calc(var(--head) + env(safe-area-inset-top,0px));z-index:20;background:var(--bg);padding:10px 0 12px;margin-bottom:8px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-left:calc(-1 * var(--gx));margin-right:calc(-1 * var(--gx));padding-left:var(--gx);padding-right:var(--gx)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:48px;min-width:58px;border:1px solid var(--line);padding:4px 14px;border-radius:14px;font-size:14px;font-weight:600;line-height:1.1;color:var(--fg);background:var(--surface)}
+.chip small{font-size:10.5px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip[aria-pressed="true"] small{color:#0c0b0a99}
+.grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media (min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media (min-width:960px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.out{opacity:.62}
+.card .art{display:block;position:relative;background:var(--surface-2)}
+.arte{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block}
+.ph{display:grid;place-items:center;font-family:var(--display);font-weight:800;color:#f4efe733;text-align:center;line-height:1;padding:16px;font-size:44px;overflow-wrap:anywhere;background:linear-gradient(160deg,#2a2520,#141210)}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card .name{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.08;margin:0;letter-spacing:-.01em}
+.card .where{color:var(--muted);font-size:14px;margin-top:-6px}
 .selos{display:flex;flex-wrap:wrap;gap:6px}
-.selo{font-size:11.5px;padding:3px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
-.selo.esg{color:var(--red)}
-.ph{display:grid;place-items:center;font-family:var(--display);font-weight:800;color:var(--gold-ink);text-align:center;line-height:1;padding:8px;overflow:hidden;overflow-wrap:anywhere}
+.selo{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 9px;border-radius:999px;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);white-space:nowrap}
+.selo.quando{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.selo.vip{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.selo.cupom{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.selo.lote{color:var(--green);border-color:color-mix(in srgb,var(--green) 45%,var(--line))}
+.selo.esg{color:var(--red);border-color:color-mix(in srgb,var(--red) 45%,var(--line))}
+.selo.aviso{color:var(--gold-ink);background:#f4efe7;border-color:#f4efe7}
+.card .acts{display:flex;gap:8px;margin-top:auto;padding-top:4px}
+.card .acts .btn{flex:1;min-height:46px;font-size:14px;padding:0 12px}
+.empty{color:var(--muted);margin:8px 0 0}
 
-/* destaque */
-.hero{display:block;background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
-.hero .img{position:relative}
-.hero img,.hero .ph{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;max-width:100%;font-size:40px}
-.ribbon{position:absolute;top:12px;right:12px;background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:6px}
-.hero .txt{padding:14px 16px 16px;display:flex;flex-direction:column;gap:3px}
-.hero .name{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.05;margin:0}
+/* cupom */
+.cupom-box{display:flex;align-items:center;gap:10px;border:1px dashed color-mix(in srgb,var(--gold) 60%,var(--line));border-radius:14px;padding:8px 8px 8px 14px;background:color-mix(in srgb,var(--gold) 7%,var(--surface))}
+.cupom-box .cod{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.cupom-box .cod small{color:var(--muted);font-size:11.5px}
+.cupom-box .cod b{font-family:var(--display);font-size:19px;letter-spacing:.06em;color:var(--gold)}
+.cupom-box .copy{margin-left:auto;min-height:40px;padding:0 14px;border-radius:10px;background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:13.5px;flex:none}
 
-/* carrossel */
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,62%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;scrollbar-width:none;
-  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));scroll-padding-left:max(16px,env(safe-area-inset-left,0px))}
-.slide{scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
-.slide .open{display:flex;flex-direction:column;text-align:left}
-.slide img,.slide .ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;font-size:26px}
-.slide .txt{padding:10px 12px 0;display:flex;flex-direction:column;gap:2px;min-width:0}
-.slide .name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slide .foot{padding:10px 12px 12px;margin-top:auto}
-.mini{display:flex;align-items:center;justify-content:center;width:100%;min-height:40px;border-radius:10px;font-weight:600;font-size:13.5px}
-.mini.vip{border:1px solid var(--gold);color:var(--gold)}
-.mini.buy{background:var(--gold);color:var(--gold-ink)}
-.mini.off{background:var(--surface-2);color:var(--muted)}
+/* 3 passos */
+.passos{display:grid;gap:12px;grid-template-columns:1fr;counter-reset:p}
+@media (min-width:760px){.passos{grid-template-columns:repeat(3,1fr)}}
+.passo{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.passo .n{flex:none;font-family:var(--serif);font-style:italic;font-size:44px;line-height:.8;color:var(--gold);width:28px}
+.passo h3{font-family:var(--display);font-weight:800;font-size:20px;margin:0 0 4px}
+.passo p{margin:0;color:var(--muted);font-size:14.5px}
 
-/* lista compacta */
-.list{display:flex;flex-direction:column;gap:10px}
-.row{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;text-align:left;width:100%}
-.row img,.row .ph{width:72px;height:72px;border-radius:10px;object-fit:cover;font-size:13px}
-.row .txt{min-width:0;display:flex;flex-direction:column;gap:1px}
-.row .name{font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding-right:6px;color:var(--muted);font-size:12px;white-space:nowrap}
-.row .side b{color:var(--fg);font-size:13.5px;font-variant-numeric:tabular-nums}
-.row .chev{font-size:20px;line-height:1}
-.row .selos,.slide .selos{margin-top:4px}
-.row.out,.slide.out{opacity:.6}
-.row .vipdot{font-size:11px;color:var(--gold);font-weight:600}
-.aviso{display:inline-flex;align-self:flex-start;background:var(--gold);color:var(--gold-ink);font-weight:700;font-size:11.5px;padding:3px 8px;border-radius:6px}
-.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;
-  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.chip{flex:none;min-height:40px;border:1px solid var(--line);padding:0 14px;border-radius:999px;font-size:13.5px;color:var(--muted)}
-.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:600}
-.empty{color:var(--muted);font-size:14px;margin:0}
-.month{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px;font-weight:600}
+/* canal */
+.canal-box{position:relative;overflow:hidden;border-radius:24px;padding:28px 22px;background:linear-gradient(135deg,#1d1a15 0%,#13110f 100%);border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));display:flex;flex-direction:column;gap:14px}
+.canal-box::before{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--gold) 28%,transparent),transparent 70%);pointer-events:none}
+.canal-box h2{font-size:clamp(26px,6.6vw,36px);max-width:16ch}
+.canal-box p{margin:0;color:color-mix(in srgb,var(--fg) 78%,transparent);max-width:44ch}
+.canal-box .btn{align-self:flex-start}
 
-.cta{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600}
-.note{color:var(--muted);font-size:12.5px;text-align:center;margin:0}
+/* por trás da lista */
+.sobre{display:grid;grid-template-columns:1fr;gap:18px;align-items:center}
+@media (min-width:760px){.sobre{grid-template-columns:300px 1fr;gap:32px}}
+.sobre .ft{border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--surface-2);max-width:340px}
+.sobre .ft img{width:100%;height:100%;object-fit:cover;object-position:45% 20%;display:block}
+.sobre blockquote{margin:0;font-family:var(--serif);font-style:italic;font-size:clamp(24px,6vw,32px);line-height:1.15;color:var(--fg)}
+.sobre p{color:var(--muted);margin:12px 0 0}
+.sobre .ig{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-weight:700;color:var(--gold);min-height:44px}
+
+footer{padding:56px 0 40px;color:var(--muted);font-size:13px;text-align:center}
+footer .draft{display:inline-block;margin-top:10px;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;max-width:520px}
+footer .draft b{color:var(--gold)}
 
 /* página da festa */
-.page{position:fixed;inset:0;background:var(--bg);z-index:20;overflow-y:auto;padding-top:env(safe-area-inset-top,0px)}
-.page .inner{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding-block:12px 140px}
-.bar-top{display:flex;justify-content:space-between;align-items:center}
-.circle{width:40px;height:40px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:18px}
-.page img.flyer{height:auto;aspect-ratio:auto}
-.page .flyer{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:18px;display:block;max-width:100%;font-size:48px}
+.page{position:fixed;inset:0;background:var(--bg);z-index:40;overflow-y:auto;padding-top:env(safe-area-inset-top,0px)}
+.page .inner{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px;padding-block:12px 150px}
+.bar-top{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2;padding:8px 0;background:var(--bg)}
+.circle{width:44px;height:44px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:18px}
+.page .arte{border-radius:18px}
 .page h3{font-family:var(--display);font-weight:800;font-size:30px;line-height:1.05;margin:0;text-wrap:balance}
 .info{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px}
 .info .t{color:var(--gold);font-weight:600}
 .info .s{color:var(--muted);font-size:13.5px}
 .info .acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.pill{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:0 14px;min-height:38px;display:inline-flex;align-items:center;font-size:13px}
 .desc{margin:0;opacity:.9}
 .rules{border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
-.sticky{position:fixed;left:0;right:0;bottom:0;z-index:25;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:45;background:rgb(12 11 10 / .95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);
   padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .sticky .in{max-width:560px;margin:0 auto;display:flex;gap:10px;align-items:center}
 .sticky .price{flex:none;display:flex;flex-direction:column;font-size:12px;color:var(--muted);line-height:1.2}
 .sticky .price b{color:var(--fg);font-size:17px;font-variant-numeric:tabular-nums}
-.btn{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;padding:8px 10px}
-.btn.buy{background:var(--gold);color:var(--gold-ink)}
-.btn.vip{border:1px solid var(--gold);color:var(--gold)}
-.btn.ghost{background:var(--surface-2);color:var(--fg)}
-.btn[disabled]{opacity:.5}
+.sticky .btn{flex:1;border-radius:14px;padding:0 10px}
 
 /* Lista VIP */
-.sheet-bg{position:fixed;inset:0;background:rgb(0 0 0 / .65);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.sheet-bg{position:fixed;inset:0;background:rgb(0 0 0 / .65);display:flex;align-items:flex-end;justify-content:center;z-index:60}
 .sheet{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0;
   padding:20px max(18px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;max-height:92%;overflow:auto}
 .sheet h3{font-family:var(--display);font-weight:800;font-size:22px;margin:0;line-height:1.1}
@@ -135,129 +191,194 @@ h2{font-family:var(--display);font-weight:800;font-size:22px;margin:0 0 12px;let
 .sheet .check{flex-direction:row;align-items:flex-start;gap:10px}
 .sheet .check input{margin-top:2px;width:18px;height:18px;flex:none}
 .sheet .line{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
-.linkish{color:var(--gold);font-size:13px;text-decoration:underline;min-height:32px}
-.sheet .btn{flex:none;width:100%}
+.linkish{color:var(--gold);font-size:13px;text-decoration:underline;min-height:36px}
+.sheet .btn{width:100%;border-radius:14px}
+.note{color:var(--muted);font-size:12.5px;margin:0}
 .done{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
 .done .big{font-size:40px;line-height:1;color:var(--gold)}
 .err{color:var(--red);font-size:13px;margin:0}
-.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:40;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:80;max-width:calc(100% - 32px);text-align:center}
 @media (prefers-reduced-motion:no-preference){.page{animation:in .2s ease-out}@keyframes in{from{transform:translateY(16px)}}}
 </style>
 </head>
 <body>
-<div class="pad"><div class="wrap">
-  <div class="top">
-    <img class="logo" src="logo.png" width="44" height="44" alt="Logo JS">
-    <div><h1>João Siqueira convida!</h1><p>Encontros com alma. Memórias pra vida!</p></div>
-    <div class="links"><a class="ig" href="https://instagram.com/jonnes" target="_blank" rel="noopener" aria-label="Instagram @jonnes"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a><a class="ig" href="https://whatsapp.com/channel/0029VbDE0MF0QeapPhq5eY2O" target="_blank" rel="noopener" aria-label="Canal do Jonnes no WhatsApp"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 0 0-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1 0 12 3.5z"/><path d="M9 8.5c-.3 2.6 3.2 6.300 6.300 6.300l1-1.300-2-1.200-.8.800c-1-.5-1.800-1.300-2.300-2.300l.8-.8L10.300 8z" fill="currentColor" stroke="none"/></svg></a></div>
+
+<header class="head" id="head"><div class="pad"><div class="wrap">
+  <a class="brand" href="#topo" aria-label="Início"><img id="logo" alt="" width="32" height="38"><b>João Siqueira convida</b></a>
+  <nav aria-label="Principal">
+    <a class="txt" href="#agenda">Agenda</a>
+    <a class="txt" href="#como">Como funciona</a>
+    <a class="txt" data-canal href="#" target="_blank" rel="noopener">Canal</a>
+    <button class="btn gold canal" id="contaBtn" data-conta></button>
+  </nav>
+</div></div></header>
+
+<main id="topo">
+  <div class="hero">
+    <div class="foto" id="heroFoto"></div>
+    <div class="txt pad"><div class="wrap">
+      <p class="eyebrow">Curadoria de noites · São Paulo</p>
+      <h1>Festas que valem <em>sair de casa</em></h1>
+      <p class="sub">Agenda, descontos e listas VIP, tudo no mesmo lugar.</p>
+      <div class="acts"><a class="btn gold" href="#agenda">Ver agenda</a><a class="btn line" data-canal href="#" target="_blank" rel="noopener">Entrar no canal</a></div>
+    </div></div>
   </div>
 
-  <section id="hero" aria-label="Destaque"></section>
-  <div class="chips" id="chips" role="toolbar" aria-label="Filtrar por estilo"></div>
-  <section id="secSemana"><h2>Esta semana</h2><div class="rail" id="rail"></div></section>
-  <section id="secProx"><h2>Próximas</h2><div class="list" id="list"></div></section>
+  <div class="pad"><div class="wrap">
+    <section id="agenda" aria-labelledby="hAgenda">
+      <div class="sec-h"><div><p class="eyebrow">Próximas noites</p><h2 id="hAgenda">Agenda</h2></div><span class="count" id="count"></span></div>
+      <div class="chips-bar"><div class="chips" id="chips" role="toolbar" aria-label="Filtrar por data"></div></div>
+      <div class="grid" id="grid"></div>
+    </section>
 
-  <a class="cta" href="https://whatsapp.com/channel/0029VbDE0MF0QeapPhq5eY2O" target="_blank" rel="noopener">Receber a agenda toda terça no WhatsApp</a>
-</div></div>
+    <section id="como" aria-labelledby="hComo">
+      <div class="sec-h"><div><p class="eyebrow">Como funciona</p><h2 id="hComo">Três passos e você está dentro</h2></div></div>
+      <div class="passos">
+        <div class="passo"><span class="n">1</span><div><h3>Escolha</h3><p>Veja a agenda e filtre pelo dia em que você quer sair.</p></div></div>
+        <div class="passo"><span class="n">2</span><div><h3>Decida</h3><p>Lista VIP quando a festa tem, ou ingresso com o cupom do Jonnes.</p></div></div>
+        <div class="passo"><span class="n">3</span><div><h3>Confirme</h3><p>Para a Lista VIP, crie sua conta uma vez só e coloque seu nome aqui mesmo. Ingresso é na plataforma oficial, sem login.</p></div></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="hCanal">
+      <div class="canal-box">
+        <p class="eyebrow">Canal no WhatsApp</p>
+        <h2 id="hCanal">A agenda da semana, toda terça, no seu WhatsApp</h2>
+        <p>Festas novas, listas que abriram e cupons antes de esgotar. Sem grupo, sem spam: é só seguir o canal.</p>
+        <a class="btn gold" data-canal href="#" target="_blank" rel="noopener">Entrar no canal</a>
+      </div>
+    </section>
+
+    <section id="sobre" aria-labelledby="hSobre">
+      <div class="sobre">
+        <div class="ft" id="sobreFoto"></div>
+        <div>
+          <p class="eyebrow" id="hSobre">Por trás da lista</p>
+          <blockquote>“Encontros com alma. Memórias pra vida.”</blockquote>
+          <p>Eu sou o João Siqueira, o Jonnes. Aqui estão só as festas que eu indico de verdade, com lista VIP quando tem e com o meu cupom quando dá desconto. Festa nova sai todo dia no @<span class="igRp"></span>; as exclusivas e a rotina ficam no meu pessoal, @<span class="igPes"></span>.</p>
+          <a class="ig" id="igLink" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg><span id="igNome"></span></a>
+          <a class="ig" id="igLink2" href="#" target="_blank" rel="noopener" style="margin-left:14px;color:var(--fg)"><span id="igNome2"></span></a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>João Siqueira convida · São Paulo</div>
+      
+    </footer>
+  </div></div>
+</main>
 
 <div id="pageRoot"></div>
 <div id="sheetRoot"></div>
 
 <script src="dados.js"></script>
 <script>
-// As festas vêm da planilha "Site - Festas" (lida ao vivo). dados.js é só uma cópia de reserva.
-const PLANILHA="1JVHsvlKl9VrYhiRwuzt8B_21SmFlOmJJl0F4Cv-JveA";
-// Endereço do Apps Script da planilha (apps-script/Code.gs): entrega as festas e grava a Lista VIP.
-// Vazio = site usa a cópia de reserva e a Lista VIP abre o link da coluna "Link da lista VIP", se houver.
+// ===== Fácil de trocar =====
+const INSTA="jonnesrp";                         // Instagram das festas (todo dia), sem o @
+const INSTA_PESSOAL="jonnes";                   // Instagram pessoal (festas exclusivas e rotina)
+const INSTA_LISTA="jonnesrp";                   // @ que a pessoa precisa seguir para validar a Lista VIP
+const CANAL="https://whatsapp.com/channel/0029VbDE0MF0QeapPhq5eY2O";
+const FOTO_CAPA="capa-jonnes.jpg";                     // foto da capa (no site publicado: "capa-jonnes.jpg"). Vazio = capa sem foto.
+const FOTO_SOBRE="sobre-jonnes.jpg";                   // foto do bloco "Por trás da lista" (colorida)
+const LOGO="logo.png";
+const RASCUNHO=false;                     // true = rascunho: conta e lista ficam só no celular
+// Endereço do Apps Script da planilha (apps-script/Code.gs). Com ele, conta e Lista VIP gravam na planilha de verdade.
 const VIP_ENDPOINT="";
-// flyers na pasta flyers/; a coluna "Flyer (link)" da planilha tem prioridade
-const FLYER={"cardume-nye-27":["cardume","50% 35%","50% 68%"],"fua-quinta-de-verao":["fua"],"fua-ultimate-pop":["fuafoto","40% 50%"],"lets-up-5-anos":["letsup","50% 20%"],"cha-da-alice-verao":["cha","50% 22%"],"furduncinho":["furd","50% 30%"],"he-she-they-apresenta-cristobal-pesce":["hst"],"rush":["rush"],"sambalaia":["sambalaia"],"cardume-verano":["verano","50% 40%"],"festa-javali-14-anos":["javali"],"rupaul-ao-vivo":["rupaul","50% 30%"],"ensaios-da-anitta-2027":["anitta","70% 30%"]};
+const CONTA_ON=RASCUNHO||!!VIP_ENDPOINT;
+// Artes já no formato padrão 4:5 (1080x1350), feitas com artes/padronizar_arte.py
+const IMG={"anitta": "flyers/anitta.jpg", "cardume": "flyers/cardume.jpg", "cha": "flyers/cha.jpg", "fua": "flyers/fua.jpg", "fuafoto": "flyers/fuafoto.jpg", "furd": "flyers/furd.jpg", "hst": "flyers/hst.jpg", "javali": "flyers/javali.jpg", "letsup": "flyers/letsup.jpg", "rupaul": "flyers/rupaul.jpg", "rush": "flyers/rush.jpg", "sambalaia": "flyers/sambalaia.jpg", "verano": "flyers/verano.jpg"};
+// Cada linha = uma linha da planilha "Site - Festas" (no site publicado, lida direto da planilha)
+let LINHAS=LINHAS_COPIA;
+// Qual arte vai em qual festa (pelo nome da festa). No site publicado vale a coluna "Flyer (link)".
+const FLYER={"cardume-nye-27":"cardume","fua-quinta-de-verao":"fua","fua-ultimate-pop":"fuafoto","lets-up-5-anos":"letsup","cha-da-alice-verao":"cha","furduncinho":"furd","he-she-they-apresenta-cristobal-pesce":"hst","rush":"rush","sambalaia":"sambalaia","cardume-verano":"verano","festa-javali-14-anos":"javali","rupaul-ao-vivo":"rupaul","ensaios-da-anitta-2027":"anitta"};
+
 const slug=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 const simV=v=>/^s(im)?$/i.test(String(v||"").trim());
 const dataISO=v=>{const m=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(v||"").trim());return m?`${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`:null};
-const dinheiro=v=>{v=String(v??"").trim();if(!v)return"";const n=Number(v.replace(/\./g,"").replace(",","."));return isNaN(n)?v:n.toFixed(2).replace(".",",")};
-// lê pelo nome da coluna (linha 1 da planilha), então a ordem das colunas pode mudar
+const dinheiro=v=>{v=String(v??"").trim();if(!v)return"";const n=Number(v.replace(/\./g,"").replace(",","."));return isNaN(n)?v:(n%1?n.toFixed(2).replace(".",","):String(n))};
+// código do cupom: coluna "Cupom para digitar"; senão "cupom XYZ" no texto do desconto; senão ?cupom= no link
+function acharCupom(cupom,desconto,link){
+  if(cupom) return {cod:cupom.toUpperCase(),noLink:false};
+  const m=/cupom\s+([a-z0-9_-]+)/i.exec(desconto||""); if(m) return {cod:m[1].toUpperCase(),noLink:new RegExp(m[1],"i").test(link||"")};
+  const q=/[?&]cupom=([^&#]+)/i.exec(link||""); if(q) return {cod:decodeURIComponent(q[1]).toUpperCase(),noLink:true};
+  return null;
+}
+// lê pelo nome da coluna (linha 1), então a ordem das colunas pode mudar. "Lote" e "% vendido" são opcionais.
 function festasDaPlanilha(linhas){
   const cab=linhas[0].map(h=>slug(String(h)));
   const col=n=>cab.findIndex(h=>h.startsWith(n));
-  const K={nome:col("festa"),inicio:col("data-inicio"),fim:col("data-fim"),hora:col("hora-inicio"),horaFim:col("hora-fim"),local:col("local"),end:col("endereco"),selos:col("estilos"),desc:col("descricao"),plataforma:col("plataforma"),link:col("link-do-ingresso"),cupom:col("cupom"),desconto:col("desconto"),preco:col("preco"),vip:col("lista-vip"),vipAte:col("vip-ate"),vipExtra:col("regra-extra"),vipLink:col("link-da-lista"),destaque:col("destaque"),esgotado:col("esgotado"),aviso:col("aviso"),foto:col("flyer")};
-  return linhas.slice(1).filter(l=>String(l[K.nome]||"").trim()).map(l=>{const c=k=>K[k]<0?"":String(l[K[k]]??"").trim();const id=slug(c("nome"));const fl=FLYER[id]||[];
+  const K={nome:col("festa"),inicio:col("data-inicio"),fim:col("data-fim"),hora:col("hora-inicio"),horaFim:col("hora-fim"),local:col("local"),end:col("endereco"),selos:col("estilos"),desc:col("descricao"),plataforma:col("plataforma"),link:col("link-do-ingresso"),cupom:col("cupom"),desconto:col("desconto"),preco:col("preco"),vip:col("lista-vip"),vipAte:col("vip-ate"),vipExtra:col("regra-extra"),vipLink:col("link-da-lista"),destaque:col("destaque"),esgotado:col("esgotado"),aviso:col("aviso"),foto:col("flyer"),lote:col("lote"),vendido:cab.findIndex(h=>/vendido/.test(h))};
+  return linhas.slice(1).filter(l=>String(l[K.nome]||"").trim()).map(l=>{const c=k=>K[k]<0?"":String(l[K[k]]??"").trim();const id=slug(c("nome"));
+    const link=c("link")||"#";
     return {id,nome:c("nome"),inicio:dataISO(c("inicio")),fim:dataISO(c("fim")),hora:c("hora"),horaFim:c("horaFim"),
-      local:c("local"),end:c("end")||c("local"),selos:c("selos").split(",").map(x=>x.trim()).filter(Boolean),desc:c("desc"),plataforma:c("plataforma"),
-      link:c("link")||"#",cupom:c("cupom"),desconto:c("desconto"),preco:dinheiro(c("preco")),vip:simV(c("vip")),vipLink:c("vipLink"),vipAte:c("vipAte"),vipExtra:c("vipExtra"),
-      destaque:simV(c("destaque")),esgotado:simV(c("esgotado")),aviso:c("aviso"),
-      img:c("foto")?null:fl[0]||null,foto:c("foto"),pos:fl[1],posHero:fl[2],cor:"#3a332b"}});
+      local:c("local"),end:c("end")||c("local"),estilos:c("selos").split(",").map(x=>x.trim()).filter(Boolean),desc:c("desc"),plataforma:c("plataforma"),
+      link,cupom:acharCupom(c("cupom"),c("desconto"),link),desconto:c("desconto"),preco:dinheiro(c("preco")),vip:simV(c("vip"))&&(CONTA_ON||!!c("vipLink")),vipLink:c("vipLink"),vipAte:c("vipAte"),vipExtra:c("vipExtra"),
+      destaque:simV(c("destaque")),esgotado:simV(c("esgotado")),aviso:c("aviso"),lote:c("lote"),vendido:c("vendido").replace("%",""),
+      arte:c("foto")||(FLYER[id]&&IMG[FLYER[id]])||""}});
 }
-let FESTAS = [];
-function csv(t){const L=[];let l=[],c="",q=false;for(let i=0;i<t.length;i++){const x=t[i];
-  if(q){if(x==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=x}
-  else if(x==='"')q=true;else if(x===","){l.push(c);c=""}else if(x==="\n"){l.push(c);L.push(l);l=[];c=""}else if(x!=="\r")c+=x}
-  if(c||l.length){l.push(c);L.push(l)} return L}
-const valida=L=>Array.isArray(L)&&L.length>1&&L[0].some(h=>slug(String(h))==="festa")&&L[0].some(h=>slug(String(h)).startsWith("data-inicio"));
-function usar(L){FESTAS=festasDaPlanilha(L);render();rota()}
-async function carregar(){
-  let guardada=null;try{guardada=JSON.parse(localStorage.getItem("jonnes-festas")||"null")}catch(_){}
-  usar(valida(guardada)?guardada:LINHAS_COPIA);
-  if(VIP_ENDPOINT){try{const r=await fetch(VIP_ENDPOINT,{cache:"no-store"});const j=await r.json();if(j.ok&&valida(j.linhas)){
-      try{localStorage.setItem("jonnes-festas",JSON.stringify(j.linhas))}catch(_){}
-      if(!document.getElementById("sheetRoot").innerHTML)usar(j.linhas);return}}catch(_){}}
-  for(const u of [`https://docs.google.com/spreadsheets/d/${PLANILHA}/export?format=csv`,`https://docs.google.com/spreadsheets/d/${PLANILHA}/gviz/tq?tqx=out:csv&headers=1`]){
-    try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)continue;const L=csv(await r.text());if(!valida(L))continue;
-      try{localStorage.setItem("jonnes-festas",JSON.stringify(L))}catch(_){}
-      if(!document.getElementById("sheetRoot").innerHTML)usar(L);return}catch(_){}
-  }
-}
+let FESTAS=festasDaPlanilha(LINHAS);
 const AGORA=new Date();
 const HOJE=new Date(AGORA.getFullYear(),AGORA.getMonth(),AGORA.getDate(),12);
 const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-const MESF=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-const DIA=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const MESF=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const DIA=["dom","seg","ter","qua","qui","sex","sáb"];
+const DIAF=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
 const d=s=>new Date(s+"T12:00:00");
 const p2=n=>String(n).padStart(2,"0");
-const curta=s=>`${p2(d(s).getDate())}/${p2(d(s).getMonth()+1)}`;
-function quando(f){ if(!f.inicio) return "Data a confirmar"; if(f.fim) return `${curta(f.inicio)} → ${curta(f.fim)}`; const x=d(f.inicio); if(iso(x)===iso(HOJE)) return `Hoje${f.hora?" · "+f.hora:""}`; return `${DIA[x.getDay()]}, ${x.getDate()} de ${MESF[x.getMonth()].toLowerCase()}${f.hora?" · "+f.hora:""}`; }
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const pic=(f,cls="")=>(f.img||f.foto)?`<img class="${cls}" style="object-position:${f.pos||"50% 50%"}" src="${esc(f.foto||`flyers/${f.img}.jpg`)}" alt="Flyer ${esc(f.nome)}" loading="lazy">`:`<div class="${cls} ph" style="background:${f.cor}" aria-hidden="true">${esc(f.nome.split(" ")[0])}</div>`;
-const hnum=h=>{const m=/^(\d+)h(\d+)?$/.exec(h||"");return m?+m[1]+(+m[2]||0)/60:null};
 const iso=x=>`${x.getFullYear()}-${p2(x.getMonth()+1)}-${p2(x.getDate())}`;
-// quando a festa acaba de verdade (vira a madrugada => dia seguinte)
+const curta=s=>`${d(s).getDate()} ${MES[d(s).getMonth()]}`;
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function quandoSelo(f){ if(!f.inicio) return "Data a confirmar"; if(f.fim) return `${curta(f.inicio)} → ${curta(f.fim)}`; const x=d(f.inicio); const dia=iso(x)===iso(HOJE)?"Hoje":cap(DIA[x.getDay()]); return `${dia}, ${curta(f.inicio)}${f.hora?" · "+f.hora:""}`; }
+function quandoLongo(f){ if(!f.inicio) return "Data a confirmar"; if(f.fim) return `De ${curta(f.inicio)} a ${curta(f.fim)}`; const x=d(f.inicio); return `${DIAF[x.getDay()]}, ${x.getDate()} de ${MESF[x.getMonth()]}${f.hora?" · "+f.hora:""}`; }
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const arte=f=>f.arte?`<img class="arte" src="${esc(f.arte)}" alt="Arte da festa ${esc(f.nome)}" loading="lazy" width="1080" height="1350">`:`<div class="arte ph" aria-hidden="true">${esc(f.nome)}</div>`;
+const hnum=h=>{const m=/^(\d+)h(\d+)?$/.exec(h||"");return m?+m[1]+(+m[2]||0)/60:null};
 function termina(f){const x=d(f.fim||f.inicio);const a=hnum(f.hora),b=hnum(f.horaFim);
   if(f.fim){x.setHours(b??23,b==null?59:0,0,0);return x}
   if(b!=null&&a!=null&&b<a){x.setDate(x.getDate()+1);x.setHours(Math.floor(b),(b%1)*60,0,0);return x}
   if(b!=null){x.setHours(Math.floor(b),(b%1)*60,0,0);return x}
   x.setDate(x.getDate()+1);x.setHours(6,0,0,0);return x}
-const selosCurto=f=>`<div class="selos">${f.selos.slice(0,2).map(s=>`<span class="selo">${esc(s)}</span>`).join("")}${f.selos.includes("+18")&&f.selos.indexOf("+18")>1?'<span class="selo">+18</span>':""}${f.esgotado?'<span class="selo esg">Esgotado</span>':""}</div>`;
-let filtro="Todas";
-const selos=f=>`<div class="selos">${f.selos.map(s=>`<span class="selo">${esc(s)}</span>`).join("")}${f.esgotado?'<span class="selo esg">Esgotado</span>':""}</div>`;
 
-const temVip=f=>!!(VIP_ENDPOINT||f.vipLink);
-const vipBtn=(f,cls,txt)=>VIP_ENDPOINT?`<button class="${cls} vip" data-vip="${f.id}">${txt}</button>`:`<a class="${cls} vip" href="${esc(f.vipLink)}" target="_blank" rel="noopener">${txt}</a>`;
-function miniBtn(f){
-  if(f.esgotado) return `<span class="mini off">Esgotado</span>`;
-  if(f.vip&&temVip(f)) return vipBtn(f,"mini",`Lista VIP${f.vipAte?" até "+esc(f.vipAte):""}`);
-  if(f.cupom||f.link==="#"||f.vip) return `<button class="mini buy" data-open="${f.id}">${f.cupom?"Ver cupom":"Ver ingresso"}</button>`;
-  return `<a class="mini buy" href="${esc(f.link)}" target="_blank" rel="noopener">${f.desconto?"Ingresso com desconto":"Comprar ingresso"}</a>`;
+function selosCard(f){
+  const s=[`<span class="selo quando">${esc(quandoSelo(f))}</span>`];
+  if(f.esgotado) s.push(`<span class="selo esg">Esgotado</span>`);
+  else{
+    if(f.lote||f.vendido) s.push(`<span class="selo lote">${[f.lote?`Lote ${esc(f.lote)}`:"",f.vendido?`${esc(f.vendido)}% vendido`:""].filter(Boolean).join(" · ")}</span>`);
+    if(f.vip) s.push(`<span class="selo vip">Lista VIP disponível</span>`);
+    if(f.cupom) s.push(`<span class="selo cupom">Cupom Jonnes</span>`);
+    else if(/%/.test(f.desconto)) s.push(`<span class="selo cupom">${esc(f.desconto)} de desconto</span>`);
+    if(f.aviso) s.push(`<span class="selo aviso">${esc(f.aviso)}</span>`);
+  }
+  return `<div class="selos">${s.join("")}</div>`;
 }
-function linha(f){return `<a class="row${f.esgotado?" out":""}" href="#${f.id}">${pic(f)}<div class="txt"><span class="name">${esc(f.nome)}</span><span class="when">${esc(quando(f))}</span><span class="where">${esc(f.local)}</span>${selosCurto(f)}</div><span class="side">${f.vip?'<span class="vipdot">Lista VIP</span>':""}${f.preco&&!f.esgotado?`<span>a partir de</span><b>R$ ${esc(f.preco)}</b>`:""}<span class="chev" aria-hidden="true">›</span></span></a>`}
+function cupomBox(f){
+  if(!f.cupom||f.esgotado) return "";
+  const dica=f.cupom.noLink?"Já vai aplicado no link":"Cole na hora de pagar";
+  return `<div class="cupom-box"><span class="cod"><small>${dica}</small><b>${esc(f.cupom.cod)}</b></span><button class="copy" data-cupom="${esc(f.cupom.cod)}">Copiar cupom</button></div>`;
+}
+function botoesCard(f){
+  if(f.esgotado) return `<a class="btn ghost" href="#${f.id}">Ver detalhes</a>`;
+  const comprar=`<a class="btn ${f.vip?"line":"gold"}" href="${esc(f.link)}" target="_blank" rel="noopener">${f.vip?"Ingresso":(f.preco?`Ingresso · R$ ${esc(f.preco)}`:"Comprar ingresso")}</a>`;
+  if(f.vip) return `<button class="btn gold" data-vip="${f.id}">Lista VIP${f.vipAte?" até "+esc(f.vipAte):""}</button>${comprar}`;
+  return `${comprar}<a class="btn ghost" href="#${f.id}" style="flex:none;padding:0 16px">Detalhes</a>`;
+}
+function card(f){
+  return `<article class="card${f.esgotado?" out":""}"><a class="art" href="#${f.id}" aria-label="${esc(f.nome)}, ver detalhes">${arte(f)}</a>
+    <div class="body">${selosCard(f)}<h3 class="name"><a href="#${f.id}">${esc(f.nome)}</a></h3><span class="where">${esc(f.local)}</span>${cupomBox(f)}<div class="acts">${botoesCard(f)}</div></div></article>`;
+}
+
+let filtro="todas";
+function ativas(){return FESTAS.filter(f=>f.inicio&&termina(f)>AGORA).sort((a,b)=>a.inicio.localeCompare(b.inicio)||(hnum(a.hora)||0)-(hnum(b.hora)||0)||(!!a.esgotado)-(!!b.esgotado))}
 function render(){
-  const ativos=FESTAS.filter(f=>f.inicio&&termina(f)>AGORA).sort((a,b)=>a.inicio.localeCompare(b.inicio)||(hnum(a.hora)||0)-(hnum(b.hora)||0));
-  const estilos=[...new Set(ativos.flatMap(f=>f.selos))].filter(x=>!["+18","2 pistas","DJ set","Vários estilos","Réveillon"].includes(x));
-  document.getElementById("chips").innerHTML=["Todas",...estilos].map(x=>`<button class="chip" aria-pressed="${x===filtro}" data-chip="${esc(x)}">${esc(x)}</button>`).join("");
-  const vis=ativos.filter(f=>filtro==="Todas"||f.selos.includes(filtro));
-  const h=ativos.find(f=>f.destaque);
-  document.getElementById("hero").innerHTML=h?`<a class="hero" href="#${h.id}"><div class="img">${pic({...h,pos:h.posHero||h.pos})}<span class="ribbon">Destaque</span></div><div class="txt"><span class="when">${esc(quando(h))}</span><p class="name">${esc(h.nome)}</p><span class="where">${esc(h.local)}</span></div></a>`:"";
-  const dom=new Date(HOJE); dom.setDate(HOJE.getDate()+(7-HOJE.getDay())%7); dom.setHours(23,59);   // domingo desta semana
-  const dom2=new Date(dom); dom2.setDate(dom.getDate()+7);
-  const resto=vis.filter(f=>!f.destaque);
-  const semana=resto.filter(f=>d(f.inicio)<=dom).sort((a,b)=>(!!a.esgotado)-(!!b.esgotado));
-  document.getElementById("secSemana").hidden=!semana.length;
-  document.getElementById("rail").innerHTML=semana.map(f=>`<article class="slide${f.esgotado?" out":""}"><a class="open" href="#${f.id}">${pic(f)}<div class="txt"><span class="name">${esc(f.nome)}</span><span class="when">${esc(quando(f))}</span><span class="where">${esc(f.local)}</span>${selosCurto(f)}${f.aviso?`<span class="aviso">${esc(f.aviso)}</span>`:""}</div></a><div class="foot">${miniBtn(f)}</div></article>`).join("");
-  let last="",out="";
-  resto.filter(f=>d(f.inicio)>dom).sort((a,b)=>(d(a.inicio)<=dom2&&d(b.inicio)<=dom2)?(!!a.esgotado)-(!!b.esgotado):0).forEach(f=>{const x=d(f.inicio);
-    const g=x<=dom2?"Semana que vem":MESF[x.getMonth()]+(x.getFullYear()!==HOJE.getFullYear()?" "+x.getFullYear():"");
-    if(g!==last){last=g;out+=`<div class="month">${g}</div>`}
-    out+=linha(f)});
-  document.getElementById("list").innerHTML=out||`<p class="empty">Nenhuma outra festa de ${esc(filtro)} por enquanto.</p>`;
+  const lista=ativas();
+  const datas=[...new Set(lista.map(f=>f.inicio))];
+  if(filtro!=="todas"&&!datas.includes(filtro)) filtro="todas";
+  document.getElementById("chips").innerHTML=`<button class="chip" aria-pressed="${filtro==="todas"}" data-chip="todas">Todas</button>`+
+    datas.map(s=>{const x=d(s);const top=s===iso(HOJE)?"hoje":DIA[x.getDay()];return `<button class="chip" aria-pressed="${filtro===s}" data-chip="${s}"><small>${top}</small>${curta(s)}</button>`}).join("");
+  const vis=lista.filter(f=>filtro==="todas"||f.inicio===filtro);
+  document.getElementById("count").textContent=`${vis.length} ${vis.length===1?"festa":"festas"}`;
+  document.getElementById("grid").innerHTML=vis.length?vis.map(card).join(""):`<p class="empty">Nenhuma festa na agenda por enquanto. Entre no canal para saber das próximas.</p>`;
 }
 
 function pagina(id){
@@ -267,98 +388,217 @@ function pagina(id){
   let sticky="";
   if(f.esgotado) sticky=`<button class="btn ghost" disabled>Esgotado · lista de espera na ${esc(f.plataforma)}</button>`;
   else{
-    const price=f.preco?`<span class="price">a partir de<b>R$ ${f.preco}</b></span>`:"";
-    const vip=f.vip&&temVip(f)?vipBtn(f,"btn","Lista VIP"):"";
-    const buy=f.cupom?`<a class="btn buy" data-cupom="${esc(f.cupom)}" href="${esc(f.link)}" target="_blank" rel="noopener">Copiar cupom e comprar</a>`:`<a class="btn buy" href="${esc(f.link)}" target="_blank" rel="noopener">${vip?"Ingresso":(f.desconto?"Comprar com desconto":"Comprar ingresso")}</a>`;
-    sticky=(vip?"":price)+vip+(f.link==="#"?"":buy);
+    const price=f.preco&&!f.vip?`<span class="price">a partir de<b>R$ ${f.preco}</b></span>`:"";
+    const vip=f.vip?`<button class="btn gold" data-vip="${f.id}">Lista VIP</button>`:"";
+    const buy=`<a class="btn ${f.vip?"line":"gold"}" ${f.cupom&&!f.cupom.noLink?`data-cupom="${esc(f.cupom.cod)}"`:""} href="${esc(f.link)}" target="_blank" rel="noopener">${f.vip?"Ingresso":(f.cupom&&!f.cupom.noLink?"Copiar cupom e comprar":(f.cupom||f.desconto?"Comprar com desconto":"Comprar ingresso"))}</a>`;
+    sticky=price+vip+buy;
   }
   root.innerHTML=`<div class="page" role="dialog" aria-modal="true" aria-label="${esc(f.nome)}"><div class="pad"><div class="inner">
-    <div class="bar-top"><a class="circle" href="#" aria-label="Voltar">←</a><button class="circle" data-share="${f.id}" aria-label="Compartilhar esta festa">↗</button></div>
-    ${pic(f,"flyer")}
-    <div style="display:flex;flex-direction:column;gap:6px"><h3>${esc(f.nome)}</h3><span class="when">${esc(quando(f))}</span>${f.aviso?`<span class="aviso">${esc(f.aviso)}</span>`:""}${selos(f)}</div>
+    <div class="bar-top"><a class="circle" href="#agenda" aria-label="Voltar">←</a><button class="circle" data-share="${f.id}" aria-label="Compartilhar esta festa">↗</button></div>
+    ${arte(f)}
+    <div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(f.nome)}</h3>${selosCard(f)}</div>
+    ${cupomBox(f)}
     <p class="desc">${esc(f.desc)}</p>
-    ${f.vip?`<div class="info rules"><span class="t">Lista do @jonnes · VIP até ${esc(f.vipAte)}</span><span class="s">Sujeito à lotação da casa. ${esc(f.vipExtra||"")} Para validar, siga @jonnes no Instagram e diga "Lista do @jonnes" na portaria.</span></div>`:""}
-    ${f.cupom&&!f.esgotado?`<div class="info"><span class="t">Cupom ${esc(f.cupom)}</span><span class="s">Na ${esc(f.plataforma)} o cupom não entra sozinho: copie aqui e cole na hora de pagar para ganhar o desconto extra.</span></div>`:""}
-    <div class="info"><span class="t">${esc(quando(f))}</span><span class="s">${esc(horario)}</span></div>
+    ${f.vip?`<div class="info rules"><span class="t">Lista do Jonnes · VIP até ${esc(f.vipAte)}</span><span class="s">Sujeito à lotação da casa. ${esc(f.vipExtra||"")} Para validar, siga @${esc(INSTA_LISTA)} no Instagram e diga "Lista do Jonnes" na portaria.</span></div>`:""}
+    <div class="info"><span class="t">${esc(quandoLongo(f))}</span><span class="s">${esc(horario)}</span></div>
     <div class="info"><span class="t">${esc(f.local)}</span><span class="s">${esc(f.end)}</span><div class="acts"><button class="pill" data-copy="${esc(f.end)}">Copiar endereço</button><a class="pill" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.end)}" target="_blank" rel="noopener">Abrir no mapa</a></div></div>
+    ${f.estilos.length?`<div class="selos">${f.estilos.map(s=>`<span class="selo">${esc(s)}</span>`).join("")}</div>`:""}
   </div></div></div>
   <div class="sticky"><div class="in">${sticky}</div></div>`;
   document.body.style.overflow="hidden"; root.querySelector(".page").scrollTop=0;
 }
-function rota(){pagina(location.hash.slice(1))}
+function rota(){const h=location.hash.slice(1);if(FESTAS.some(f=>f.id===h))pagina(h);else{pagina("");}}
 window.addEventListener("hashchange",rota);
 
-function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2400)}
+function toast(m){document.querySelectorAll(".toast").forEach(t=>t.remove());const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 function copiar(txt,ok){try{navigator.clipboard.writeText(txt).then(ok,ok)}catch(_){ok()}}
 document.addEventListener("click",e=>{
+  if(e.target.hasAttribute&&e.target.hasAttribute("data-fundo")){fecharVip();return}
   const t=e.target.closest("button,a"); if(!t) return;
-  if(t.dataset.open){e.preventDefault();location.hash=t.dataset.open;return}
   if(t.dataset.chip){filtro=t.dataset.chip;render();return}
-  if(t.dataset.vip){e.preventDefault();abrirVip(t.dataset.vip);return}
+  if(t.dataset.vip){e.preventDefault();const f=FESTAS.find(x=>x.id===t.dataset.vip);if(!CONTA_ON&&f.vipLink){window.open(f.vipLink,"_blank","noopener");return}abrirVip(t.dataset.vip);return}
   if(t.hasAttribute("data-close")){fecharVip();return}
-  if(t.hasAttribute("data-trocar")){abrirVip(t.dataset.trocar,"perfil");return}
-  if(t.hasAttribute("data-perfil")){salvarPerfil(t.dataset.perfil);return}
+  if(t.hasAttribute("data-conta")){abrirConta();return}
+  if(t.dataset.contaAba){abrirConta(t.dataset.contaAba);return}
+  if(t.dataset.cadastrar){cadastrar(t.dataset.cadastrar);return}
+  if(t.hasAttribute("data-login")){entrar();return}
+  if(t.hasAttribute("data-sair")){sair();return}
+  if(t.hasAttribute("data-esqueci")){erro("Esqueceu? Chame o Jonnes no Instagram @"+INSTA+" que ele libera uma senha nova.");return}
   if(t.hasAttribute("data-enviar")){enviarNomes(t.dataset.enviar);return}
-  if(t.dataset.cupom){copiar(t.dataset.cupom,()=>toast(`Cupom ${t.dataset.cupom} copiado. Cole na hora de pagar.`));if(t.getAttribute("href")==="#")e.preventDefault();return}
+  if(t.dataset.cupom){copiar(t.dataset.cupom,()=>toast(`Cupom ${t.dataset.cupom} copiado`));return}
   if(t.dataset.copy){copiar(t.dataset.copy,()=>toast("Endereço copiado"));return}
-  if(t.dataset.share){const f=FESTAS.find(x=>x.id===t.dataset.share);const dados={title:f.nome,text:`${f.nome} · ${quando(f)} · ${f.local}`,url:location.href};
+  if(t.dataset.share){const f=FESTAS.find(x=>x.id===t.dataset.share);const dados={title:f.nome,text:`${f.nome} · ${quandoSelo(f)} · ${f.local}`,url:location.href};
     const cai=()=>copiar(location.href,()=>toast("Link da festa copiado para mandar no WhatsApp"));
     try{navigator.share?navigator.share(dados).catch(cai):cai()}catch(_){cai()} return}
 });
 
-// ---------- Lista VIP: cadastro uma vez só, lembrado neste celular ----------
-const CHAVE="jonnes-cadastro";
-function lerPerfil(){try{return JSON.parse(localStorage.getItem(CHAVE)||"null")}catch(_){return null}}
-function gravarPerfil(p){try{localStorage.setItem(CHAVE,JSON.stringify(p))}catch(_){} perfilMem=p}
-let perfilMem=null;
+// ---------- Site publicado: festas lidas ao vivo da planilha "Site - Festas" (dados.js é só cópia de reserva) ----------
+const PLANILHA="1JVHsvlKl9VrYhiRwuzt8B_21SmFlOmJJl0F4Cv-JveA";
+function csv(t){const L=[];let l=[],c="",q=false;for(let i=0;i<t.length;i++){const x=t[i];
+  if(q){if(x==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=x}
+  else if(x==='"')q=true;else if(x===","){l.push(c);c=""}else if(x==="\n"){l.push(c);L.push(l);l=[];c=""}else if(x!=="\r")c+=x}
+  if(c||l.length){l.push(c);L.push(l)} return L}
+const valida=L=>Array.isArray(L)&&L.length>1&&L[0].some(h=>slug(String(h))==="festa")&&L[0].some(h=>slug(String(h)).startsWith("data-inicio"));
+function usar(L){LINHAS=L;FESTAS=festasDaPlanilha(L);if(!document.getElementById("sheetRoot").innerHTML){render();rota()}}
+async function carregar(){
+  let guardada=null;try{guardada=JSON.parse(localStorage.getItem("jonnes-festas")||"null")}catch(_){}
+  if(valida(guardada))usar(guardada);
+  const guardar=L=>{try{localStorage.setItem("jonnes-festas",JSON.stringify(L))}catch(_){}};
+  if(VIP_ENDPOINT){try{const r=await fetch(VIP_ENDPOINT,{cache:"no-store"});const j=await r.json();if(j.ok&&valida(j.linhas)){guardar(j.linhas);usar(j.linhas);return}}catch(_){}}
+  for(const u of [`https://docs.google.com/spreadsheets/d/${PLANILHA}/export?format=csv`,`https://docs.google.com/spreadsheets/d/${PLANILHA}/gviz/tq?tqx=out:csv&headers=1`]){
+    try{const r=await fetch(u,{cache:"no-store"});if(!r.ok)continue;const L=csv(await r.text());if(!valida(L))continue;guardar(L);usar(L);return}catch(_){}
+  }
+}
+
+// ---------- Conta (cadastro e login) + Lista VIP ----------
+// Rascunho: a conta fica só neste celular. No site real ela vai para o sistema (planilha/Apps Script ou login Google).
+const ls={get(k){try{return localStorage.getItem(k)}catch(_){return mem[k]??null}},set(k,v){try{localStorage.setItem(k,v)}catch(_){} mem[k]=v},del(k){try{localStorage.removeItem(k)}catch(_){} delete mem[k]}};
+const mem={};
+const CHAVE_SESSAO="jonnes-sessao";            // {token, conta} da pessoa logada neste aparelho
+const lerSessao=()=>{try{return JSON.parse(ls.get(CHAVE_SESSAO)||"null")}catch(_){return null}};
+const logado=()=>lerSessao()?.conta||null;
+const gravarSessao=j=>ls.set(CHAVE_SESSAO,JSON.stringify({token:j.token,conta:j.conta}));
+async function hash(t){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("jonnes:"+t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(_){return "x"+[...t].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7)}}
+// Servidor: no site real, o Apps Script da planilha. No rascunho, uma imitação que guarda tudo neste celular.
+async function api(acao,dados){
+  if(VIP_ENDPOINT){
+    const r=await fetch(VIP_ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({acao,token:lerSessao()?.token,...dados})});
+    return r.json();
+  }
+  const contas=(()=>{try{return JSON.parse(ls.get("jonnes-contas-rascunho")||"[]")}catch(_){return[]}})();
+  const salvar=()=>ls.set("jonnes-contas-rascunho",JSON.stringify(contas));
+  const pub=c=>({nome:c.nome,ig:c.ig,wa:c.wa,email:c.email,agenda:c.agenda});
+  if(acao==="cadastrar"){
+    if(contas.some(c=>c.wa===dados.wa)) return {ok:false,erro:"Esse WhatsApp já tem conta. Use \"Já tenho conta\"."};
+    const c={...dados,senha:await hash(dados.senha)};contas.push(c);salvar();return {ok:true,token:"local-"+c.wa,conta:pub(c)}}
+  if(acao==="entrar"){
+    const l=dados.login, c=contas.find(c=>c.wa===l.replace(/\D/g,"")||(c.email&&c.email===l));
+    if(!c||c.senha!==await hash(dados.senha)) return {ok:false,erro:"WhatsApp/e-mail ou senha não conferem."};
+    return {ok:true,token:"local-"+c.wa,conta:pub(c)}}
+  const eu=contas.find(c=>"local-"+c.wa===lerSessao()?.token);
+  if(!eu) return {ok:false,erro:"sessao"};
+  if(acao==="editar"){Object.assign(eu,dados);salvar();return {ok:true,token:"local-"+eu.wa,conta:pub(eu)}}
+  if(acao==="lista") return {ok:true,novos:dados.nomes.length};
+  return {ok:false,erro:"?"};
+}
+async function chamar(botao,acao,dados){
+  const txt=botao.textContent;botao.disabled=true;botao.textContent="Aguarde…";
+  try{const j=await api(acao,dados);
+    if(!j.ok&&j.erro==="sessao"){ls.del(CHAVE_SESSAO);pintarConta();erro("Sua sessão expirou. Entre de novo.");return null}
+    if(!j.ok){erro(j.erro||"Não deu certo. Tente de novo.");return null}
+    return j}
+  catch(_){erro("Não consegui falar com o servidor. Confira a internet e tente de novo.");return null}
+  finally{botao.disabled=false;botao.textContent=txt}
+}
+let depoisDoLogin=null;   // festa da Lista VIP que a pessoa tentou abrir antes de entrar
+function pintarConta(){const c=logado(),b=document.getElementById("contaBtn");
+  b.hidden=!CONTA_ON;
+  b.classList.toggle("logado",!!c);
+  b.innerHTML=c?`<span class="av" aria-hidden="true">${esc(c.nome.charAt(0).toUpperCase())}</span>${esc(c.nome.split(" ")[0])}`:"Entrar";
+  b.setAttribute("aria-label",c?"Minha conta":"Entrar ou criar conta")}
 function fecharVip(){document.getElementById("sheetRoot").innerHTML=""}
-function abrirVip(id,etapa,extra){
-  const f=FESTAS.find(x=>x.id===id); const p=perfilMem||lerPerfil(); etapa=etapa||(p?"nomes":"perfil");
-  const head=`<div class="line"><span>Lista do @jonnes</span><button class="linkish" data-close>Fechar</button></div><h3>${esc(f.nome)}</h3>
-    <div class="rules"><span><b>${esc(quando(f))}</b> · ${esc(f.local)}</span><span>VIP até ${esc(f.vipAte)}, sujeito à lotação da casa.</span>${f.vipExtra?`<span>${esc(f.vipExtra)}</span>`:""}<span>Para validar, siga @jonnes no Instagram.</span></div>`;
-  let html="";
-  if(etapa==="perfil"){
-    html=head+`<p style="margin:0">Seu cadastro, uma vez só. Nas próximas festas ele já vem preenchido neste celular.</p>
-      <label for="vNome">Seu nome e sobrenome<input id="vNome" type="text" autocomplete="name" value="${esc(p?.nome||"")}"></label>
-      <label for="vIg">Seu Instagram<input id="vIg" type="text" placeholder="@seuinsta" autocapitalize="none" value="${esc(p?.ig||"")}"></label>
-      <label for="vWa">Seu WhatsApp<input id="vWa" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" value="${esc(p?.wa||"")}"></label>
+function abrirSheet(html,rotulo){document.getElementById("sheetRoot").innerHTML=`<div class="sheet-bg" data-fundo><div class="sheet" role="dialog" aria-modal="true" aria-label="${rotulo}">${html}</div></div>`;
+  const f=document.querySelector(".sheet input");if(f&&matchMedia("(pointer:fine)").matches)f.focus()}
+function abrirConta(aba,aviso){
+  const c=logado();
+  if(c&&!aba){
+    abrirSheet(`<div class="line"><span>Minha conta</span><button class="linkish" data-close>Fechar</button></div>
+      <div class="perfil"><b>${esc(c.nome)}</b><span>${esc(c.ig)}</span><span>${esc(fmtWa(c.wa))}</span>${c.email?`<span>${esc(c.email)}</span>`:""}</div>
+      <p class="note">Com a conta, você entra em qualquer Lista VIP do Jonnes com um toque, sem preencher nada de novo.</p>
+      <button class="btn ghost" data-conta-aba="editar">Editar meus dados</button>
+      <button class="linkish" data-sair style="align-self:center">Sair da conta</button>`,"Minha conta");return}
+  aba=aba||(ls.get("jonnes-ja-teve-conta")?"entrar":"criar");
+  const p=aba==="editar"?c:null;
+  const topo=`<div class="line"><span>${aba==="editar"?"Editar meus dados":"Sua conta no João Siqueira convida"}</span><button class="linkish" data-close>Fechar</button></div>
+    ${aviso?`<div class="rules" style="background:var(--surface-2);border-radius:12px;padding:12px;font-size:13.5px">${aviso}</div>`:""}
+    ${aba==="editar"?"":`<div class="tabs" role="tablist"><button role="tab" aria-selected="${aba==="criar"}" data-conta-aba="criar">Criar conta</button><button role="tab" aria-selected="${aba==="entrar"}" data-conta-aba="entrar">Já tenho conta</button></div>`}`;
+  let corpo="";
+  if(aba==="entrar"){
+    corpo=`<label for="cLogin">WhatsApp ou e-mail<input id="cLogin" type="text" autocomplete="username" autocapitalize="none"></label>
+      <label for="cSenha">Senha<input id="cSenha" type="password" autocomplete="current-password"></label>
+      <p class="err" id="vErr" hidden></p>
+      <button class="btn gold" data-login>Entrar</button>
+      <button class="linkish" data-esqueci style="align-self:center">Esqueci minha senha</button>`;
+  } else {
+    corpo=`<label for="vNome">Nome e sobrenome<input id="vNome" type="text" autocomplete="name" value="${esc(p?.nome||"")}"></label>
+      <label for="vIg">Instagram<input id="vIg" type="text" placeholder="@seuinsta" autocapitalize="none" value="${esc(p?.ig||"")}"></label>
+      <label for="vWa">WhatsApp<input id="vWa" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000" value="${esc(p?fmtWa(p.wa):"")}"></label>
+      <label for="vEm">E-mail<input id="vEm" type="email" autocomplete="email" autocapitalize="none" value="${esc(p?.email||"")}"></label>
+      ${aba==="editar"?"":`<label for="vSenha">Crie uma senha (mínimo 6 caracteres)<input id="vSenha" type="password" autocomplete="new-password"></label>`}
       <label class="check" for="vAg"><input id="vAg" type="checkbox" ${p&&!p.agenda?"":"checked"}><span>Quero receber a agenda semanal de festas do Jonnes no WhatsApp</span></label>
       <p class="err" id="vErr" hidden></p>
-      <button class="btn buy" data-perfil="${f.id}">Salvar e continuar</button>
-      <p class="note" style="text-align:left">Seus dados ficam só com o Jonnes, para a lista e a agenda. Você pode pedir para apagar quando quiser.</p>`;
-  } else if(etapa==="nomes"){
-    html=head+`<div class="line"><span>Oi, <b style="color:var(--fg)">${esc(p.nome.split(" ")[0])}</b> (${esc(p.ig)})</span><button class="linkish" data-trocar="${f.id}">Não sou eu</button></div>
-      <label for="vNomes">Nomes e sobrenomes, um embaixo do outro<textarea id="vNomes">${esc(p.nome)}\n</textarea></label>
-      <p class="err" id="vErr" hidden></p>
-      <button class="btn buy" data-enviar="${f.id}">Colocar na lista</button>`;
-  } else {
-    html=`<div class="done"><div class="big" aria-hidden="true">✓</div><h3>${extra} ${extra>1?"nomes":"nome"} na lista</h3>
-      <p style="margin:0;color:var(--muted)">${esc(f.nome)} · ${esc(quando(f))}<br>Na portaria, diga que está na <b style="color:var(--fg)">Lista do @jonnes</b>. VIP até ${esc(f.vipAte)}.</p>
-      <a class="btn buy" href="${esc(f.link)}" target="_blank" rel="noopener">Quer garantir a entrada? Ingresso com ${esc(f.desconto||"desconto")}</a>
-      <button class="btn ghost" data-vip="${f.id}">Mandar mais nomes</button><button class="linkish" data-close>Fechar</button></div>`;
+      <button class="btn gold" data-cadastrar="${aba}">${aba==="editar"?"Salvar":"Criar minha conta"}</button>
+      <p class="note">Seus dados ficam só com o Jonnes, para as listas e a agenda. Você pode pedir para apagar quando quiser.</p>`;
   }
-  document.getElementById("sheetRoot").innerHTML=`<div class="sheet-bg"><div class="sheet" role="dialog" aria-modal="true" aria-label="Lista VIP">${html}</div></div>`;
+  abrirSheet(topo+corpo,"Conta");
 }
-function erro(m){const e=document.getElementById("vErr");e.textContent=m;e.hidden=false}
-function salvarPerfil(id){
-  const nome=document.getElementById("vNome").value.trim().replace(/\s+/g," "); let ig=document.getElementById("vIg").value.trim().replace(/\s/g,""); const wa=document.getElementById("vWa").value.replace(/\D/g,"");
+const fmtWa=w=>{w=String(w||"");return w.length>=10?`(${w.slice(0,2)}) ${w.slice(2,-4)}-${w.slice(-4)}`:w};
+async function cadastrar(aba){
+  const nome=document.getElementById("vNome").value.trim().replace(/\s+/g," "); let ig=document.getElementById("vIg").value.trim().replace(/\s/g,"");
+  const wa=document.getElementById("vWa").value.replace(/\D/g,""); const email=document.getElementById("vEm").value.trim().toLowerCase();
   if(nome.split(" ").length<2) return erro("Escreva nome e sobrenome.");
   if(ig.replace("@","").length<2) return erro("Escreva seu Instagram.");
   if(wa.length<10||wa.length>13) return erro("Confira o WhatsApp, com DDD.");
+  if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return erro("Confira o e-mail.");
   if(!ig.startsWith("@")) ig="@"+ig;
-  gravarPerfil({nome,ig,wa,agenda:document.getElementById("vAg").checked}); abrirVip(id,"nomes");
+  const dados={nome,ig,wa,email,agenda:document.getElementById("vAg").checked};
+  if(aba!=="editar"){dados.senha=document.getElementById("vSenha").value; if(dados.senha.length<6) return erro("A senha precisa ter pelo menos 6 caracteres.")}
+  const j=await chamar(document.querySelector("[data-cadastrar]"),aba==="editar"?"editar":"cadastrar",dados); if(!j) return;
+  gravarSessao(j); ls.set("jonnes-ja-teve-conta","1"); pintarConta(); seguir(aba==="editar"?"Dados salvos":"Conta criada!");
 }
-async function enviarNomes(id){
+async function entrar(){
+  const login=document.getElementById("cLogin").value.trim().toLowerCase(), senha=document.getElementById("cSenha").value;
+  if(!login||!senha) return erro("Preencha o WhatsApp (ou e-mail) e a senha.");
+  const j=await chamar(document.querySelector("[data-login]"),"entrar",{login,senha}); if(!j) return;
+  gravarSessao(j); ls.set("jonnes-ja-teve-conta","1"); pintarConta(); seguir(`Oi, ${j.conta.nome.split(" ")[0]}!`);
+}
+function seguir(msg){const id=depoisDoLogin;depoisDoLogin=null;if(id)abrirVip(id);else fecharVip();toast(msg)}
+function sair(){ls.del(CHAVE_SESSAO);pintarConta();fecharVip();toast("Você saiu da conta")}
+
+function abrirVip(id,etapa,extra){
+  const f=FESTAS.find(x=>x.id===id); const c=logado();
+  if(!c){depoisDoLogin=id;return abrirConta(null,`<b>${esc(f.nome)}</b><br>Para entrar na Lista VIP, crie sua conta (uma vez só) ou entre. Depois é só colocar os nomes.`)}
+  const head=`<div class="line"><span>Lista do Jonnes</span><button class="linkish" data-close>Fechar</button></div><h3>${esc(f.nome)}</h3>
+    <div class="rules"><span><b>${esc(quandoLongo(f))}</b> · ${esc(f.local)}</span><span>VIP até ${esc(f.vipAte)}, sujeito à lotação da casa.</span>${f.vipExtra?`<span>${esc(f.vipExtra)}</span>`:""}<span>Para validar, siga @${esc(INSTA_LISTA)} no Instagram.</span></div>`;
+  let html="";
+  if(etapa!=="ok"){
+    html=head+`<div class="line"><span>Na conta de <b style="color:var(--fg)">${esc(c.nome.split(" ")[0])}</b> (${esc(c.ig)})</span><button class="linkish" data-sair>Não sou eu</button></div>
+      <label for="vNomes">Nomes e sobrenomes, um embaixo do outro<textarea id="vNomes">${esc(c.nome)}\n</textarea></label>
+      <p class="err" id="vErr" hidden></p>
+      <button class="btn gold" data-enviar="${f.id}">Colocar na lista</button>`;
+  } else {
+    html=`<div class="done"><div class="big" aria-hidden="true">✓</div><h3>${extra} ${extra>1?"nomes":"nome"} na lista</h3>
+      <p style="margin:0;color:var(--muted)">${esc(f.nome)} · ${esc(quandoLongo(f))}<br>Na portaria, diga que está na <b style="color:var(--fg)">Lista do Jonnes</b>. VIP até ${esc(f.vipAte)}.</p>
+      <a class="btn gold" href="${esc(f.link)}" target="_blank" rel="noopener">${f.cupom||f.desconto?"Garantir ingresso com desconto":"Garantir ingresso"}</a>
+      <button class="btn ghost" data-vip="${f.id}">Mandar mais nomes</button><button class="linkish" data-close>Fechar</button></div>`;
+  }
+  abrirSheet(html,"Lista VIP");
+}
+function erro(m){const e=document.getElementById("vErr");e.textContent=m;e.hidden=false}
+function enviarNomes(id){
   const nomes=[...new Set(document.getElementById("vNomes").value.split(/[\n,;]+/).map(x=>x.trim().replace(/\s+/g," ")).filter(Boolean))];
   if(!nomes.length) return erro("Escreva pelo menos um nome.");
   const curto=nomes.find(n=>n.split(" ").length<2); if(curto) return erro(`Falta o sobrenome de "${curto}".`);
-  const f=FESTAS.find(x=>x.id===id),p=perfilMem||lerPerfil(),b=document.querySelector("[data-enviar]");b.disabled=true;b.textContent="Enviando…";
-  try{const r=await fetch(VIP_ENDPOINT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({festa:f.nome,data:f.inicio,nomes,...p})});
-    const j=await r.json();if(!j.ok)throw new Error(j.erro);abrirVip(id,"ok",nomes.length)}
-  catch(_){b.disabled=false;b.textContent="Colocar na lista";erro("Não consegui enviar agora. Confira a internet e tente de novo.")}
+  const f=FESTAS.find(x=>x.id===id);
+  chamar(document.querySelector("[data-enviar]"),"lista",{festa:f.nome,data:f.inicio,nomes}).then(j=>{if(j)abrirVip(id,"ok",nomes.length)});
 }
-document.addEventListener("keydown",e=>{if(e.key==="Escape")fecharVip()});
-carregar();
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches(".sheet input:not([type=checkbox])")){e.preventDefault();const b=document.querySelector(".sheet .btn.gold");b&&b.click()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){fecharVip();if(document.querySelector(".page"))location.hash="agenda"}});
+
+// montagem inicial
+document.querySelectorAll("[data-canal]").forEach(a=>a.href=CANAL);
+document.getElementById("igLink").href="https://instagram.com/"+INSTA;
+document.getElementById("igNome").textContent="@"+INSTA;
+document.getElementById("igLink2").href="https://instagram.com/"+INSTA_PESSOAL;
+document.getElementById("igNome2").textContent="@"+INSTA_PESSOAL;
+document.querySelectorAll(".igRp").forEach(e=>e.textContent=INSTA);document.querySelectorAll(".igPes").forEach(e=>e.textContent=INSTA_PESSOAL);
+document.getElementById("logo").src=LOGO;
+const fotoTag=(alt)=>FOTO_CAPA?`<img src="${FOTO_CAPA}" alt="${alt}">`:`<div class="vazio"><span>JS</span></div>`;
+document.getElementById("heroFoto").innerHTML=fotoTag("João Siqueira, o Jonnes");
+document.getElementById("sobreFoto").innerHTML=FOTO_SOBRE?`<img src="${FOTO_SOBRE}" alt="Jonnes">`:fotoTag("Jonnes");
+const head=document.getElementById("head");
+addEventListener("scroll",()=>head.classList.toggle("scrolled",scrollY>8),{passive:true});
+pintarConta(); render(); rota(); carregar();
 </script>
 </body>
 </html>

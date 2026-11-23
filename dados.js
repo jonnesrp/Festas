@@ -1,4 +1,4 @@
-// Cópia de reserva da planilha (12/11/2026). O site usa a planilha ao vivo; isto só aparece se ela não responder.
+// Cópia de reserva da planilha (23/11/2026). O site usa a planilha ao vivo; isto só aparece se ela não responder.
 const LINHAS_COPIA=[
 [
 "Festa",
@@ -22,7 +22,9 @@ const LINHAS_COPIA=[
 "Destaque",
 "Esgotado",
 "Aviso",
-"Flyer (link)"
+"Flyer (link)",
+"Lote",
+"% vendido"
 ],
 [
 "Cardume NYE 27",
@@ -43,7 +45,10 @@ const LINHAS_COPIA=[
 "",
 "",
 "",
-"sim"
+"sim",
+"",
+"",
+""
 ],
 [
 "Fuá · Quinta de Verão",
@@ -60,7 +65,14 @@ const LINHAS_COPIA=[
 "https://gdya.dance/quinta-de-verao-1211-f1ef?link=jonnes",
 "",
 "cupom jonnes",
-"24"
+"24",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "Fuá · Ultimate Pop",
@@ -77,7 +89,14 @@ const LINHAS_COPIA=[
 "https://gdya.dance/sexta-ultimate-pop-1311-2c63?link=jonnes",
 "",
 "cupom jonnes",
-"24"
+"24",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "Let's Up 5 anos",
@@ -100,7 +119,8 @@ const LINHAS_COPIA=[
 "",
 "",
 "",
-"ÚLTIMOS INGRESSOS"
+"ÚLTIMOS INGRESSOS",
+""
 ],
 [
 "Chá da Alice Verão",
@@ -120,7 +140,11 @@ const LINHAS_COPIA=[
 "32",
 "sim",
 "1h",
-"Depois de 1h, desconto para quem está na lista. Casa cheia: quem tem ingresso entra primeiro."
+"Depois de 1h, desconto para quem está na lista. Casa cheia: quem tem ingresso entra primeiro.",
+"",
+"",
+"",
+""
 ],
 [
 "Furduncinho",
@@ -137,7 +161,14 @@ const LINHAS_COPIA=[
 "https://gandaya.dance/events/furduncinho-1511-d843?link=jonnes",
 "",
 "cupom jonnes",
-"36"
+"36",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "HE.SHE.THEY. apresenta Cristobal Pesce",
@@ -154,7 +185,14 @@ const LINHAS_COPIA=[
 "https://shotgun.live/events/he-she-they-presents-cristobal-pesce?utm_source=promoter-5463",
 "",
 "",
-"170"
+"170",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "RUSH",
@@ -176,7 +214,9 @@ const LINHAS_COPIA=[
 "",
 "",
 "",
-"não"
+"não",
+"",
+""
 ],
 [
 "Sambalaia",
@@ -195,7 +235,12 @@ const LINHAS_COPIA=[
 "20%",
 "24",
 "sim",
-"1h"
+"1h",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "Cardume Verano",
@@ -212,7 +257,14 @@ const LINHAS_COPIA=[
 "https://shotgun.live/events/cardume-verano-27?utm_source=promoter-5463",
 "",
 "",
-"80"
+"80",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "Festa Javali 14 anos",
@@ -229,7 +281,14 @@ const LINHAS_COPIA=[
 "https://gdya.dance/festa-javali-12-de-dezembro-f731?link=jonnes",
 "",
 "cupom jonnes",
-"120"
+"120",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "RuPaul ao vivo",
@@ -246,7 +305,14 @@ const LINHAS_COPIA=[
 "https://www.sympla.com.br/evento/rupaul-ao-vivo-no-brasil-sao-paulo/3627504",
 "",
 "",
-"350"
+"350",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ],
 [
 "Ensaios da Anitta 2027",
@@ -260,6 +326,16 @@ const LINHAS_COPIA=[
 "Funk, Pop, +18",
 "Turnê de verão da Anitta celebrando festas e ritmos brasileiros, com convidados.",
 "Ingresse",
-"https://www.ingresse.com/ensaiosdaanitta-27-sp"
+"https://www.ingresse.com/ensaiosdaanitta-27-sp",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+"",
+""
 ]
 ];
