@@ -109,6 +109,7 @@ h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,7vw,40px);let
 .arte{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block}
 .ph{display:grid;place-items:center;font-family:var(--display);font-weight:800;color:#f4efe733;text-align:center;line-height:1;padding:16px;font-size:44px;overflow-wrap:anywhere;background:linear-gradient(160deg,#2a2520,#141210)}
 .card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.marca{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:-6px}
 .card .name{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.08;margin:0;letter-spacing:-.01em}
 .card .where{color:var(--muted);font-size:14px;margin-top:-6px}
 .selos{display:flex;flex-wrap:wrap;gap:6px}
@@ -345,7 +346,7 @@ function festasDaPlanilha(linhas){
       local:c("local"),end:c("end")||c("local"),estilos:c("selos").split(",").map(x=>x.trim()).filter(Boolean),desc:c("desc"),plataforma:c("plataforma"),
       link,cupom:acharCupom(c("cupom"),c("desconto"),link),desconto:c("desconto"),preco:dinheiro(c("preco")),vip:simV(c("vip"))&&(CONTA_ON||!!c("vipLink")),vipLink:c("vipLink"),vipAte:c("vipAte"),marca:c("marca"),vipFecha:dataHoraBr(c("fecha")),vipExtra:c("vipExtra"),
       destaque:simV(c("destaque")),esgotado:simV(c("esgotado")),aviso:c("aviso"),lote:c("lote"),vendido:c("vendido").replace("%",""),
-      arte:c("foto")||(FLYER[id]&&IMG[FLYER[id]])||""}});
+      arte:c("foto")||(FLYER[id]&&IMG[FLYER[id]])||(RASCUNHO?"":`flyers/${id}.jpg`)}});
 }
 let FESTAS=festasDaPlanilha(LINHAS);
 const AGORA=new Date();
@@ -362,7 +363,8 @@ const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 function quandoSelo(f){ if(!f.inicio) return "Data a confirmar"; if(f.fim) return `${curta(f.inicio)} → ${curta(f.fim)}`; const x=d(f.inicio); const dia=iso(x)===iso(HOJE)?"Hoje":cap(DIA[x.getDay()]); return `${dia}, ${curta(f.inicio)}${f.hora?" · "+f.hora:""}`; }
 function quandoLongo(f){ if(!f.inicio) return "Data a confirmar"; if(f.fim) return `De ${curta(f.inicio)} a ${curta(f.fim)}`; const x=d(f.inicio); return `${DIAF[x.getDay()]}, ${x.getDate()} de ${MESF[x.getMonth()]}${f.hora?" · "+f.hora:""}`; }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const arte=f=>f.arte?`<img class="arte" src="${esc(f.arte)}" alt="Arte da festa ${esc(f.nome)}" loading="lazy" width="1080" height="1350">`:`<div class="arte ph" aria-hidden="true">${esc(f.nome)}</div>`;
+const marcaTag=f=>f.marca&&slug(f.marca)!==slug(f.nome)?`<span class="marca">${esc(f.marca)}</span>`:"";
+const arte=f=>f.arte?`<img class="arte" src="${esc(f.arte)}" alt="Arte da festa ${esc(f.nome)}" loading="lazy" width="1080" height="1350" onerror="this.onerror=null;this.removeAttribute('src');this.alt='';this.classList.add('ph')">`:`<div class="arte ph" aria-hidden="true">${esc(f.nome)}</div>`;
 const hnum=h=>{const m=/^(\d+)h(\d+)?$/.exec(h||"");return m?+m[1]+(+m[2]||0)/60:null};
 function termina(f){const x=d(f.fim||f.inicio);const a=hnum(f.hora),b=hnum(f.horaFim);
   if(f.fim){x.setHours(b??23,b==null?59:0,0,0);return x}
@@ -396,7 +398,7 @@ function botoesCard(f){
 }
 function card(f){
   return `<article class="card${f.esgotado?" out":""}"><a class="art" href="#${f.id}" aria-label="${esc(f.nome)}, ver detalhes">${arte(f)}</a>
-    <div class="body">${selosCard(f)}<h3 class="name"><a href="#${f.id}">${esc(f.nome)}</a></h3><span class="where">${esc(f.local)}</span>${cupomBox(f)}<div class="acts">${botoesCard(f)}</div></div></article>`;
+    <div class="body">${selosCard(f)}${marcaTag(f)}<h3 class="name"><a href="#${f.id}">${esc(f.nome)}</a></h3><span class="where">${esc(f.local)}</span>${cupomBox(f)}<div class="acts">${botoesCard(f)}</div></div></article>`;
 }
 
 let filtro="todas";
@@ -428,7 +430,7 @@ function pagina(id){
   root.innerHTML=`<div class="page" role="dialog" aria-modal="true" aria-label="${esc(f.nome)}"><div class="pad"><div class="inner">
     <div class="bar-top"><a class="circle" href="#agenda" aria-label="Voltar">←</a><button class="circle" data-share="${f.id}" aria-label="Compartilhar esta festa">↗</button></div>
     ${arte(f)}
-    <div style="display:flex;flex-direction:column;gap:10px"><h3>${esc(f.nome)}</h3>${selosCard(f)}</div>
+    <div style="display:flex;flex-direction:column;gap:10px">${marcaTag(f)}<h3>${esc(f.nome)}</h3>${selosCard(f)}</div>
     ${cupomBox(f)}
     <p class="desc">${esc(f.desc)}</p>
     ${listaAberta(f)?`<div class="info rules"><span class="t">Lista do Jonnes · VIP até ${esc(f.vipAte)}${f.vipFecha?` · nomes até ${esc(f.vipFecha.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}))}`:""}</span><span class="s">Sujeito à lotação da casa. ${esc(f.vipExtra||"")} Para validar, siga @${esc(INSTA_LISTA)} no Instagram e diga "Lista do Jonnes" na portaria.</span></div>`:""}
