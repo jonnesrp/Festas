@@ -3,20 +3,18 @@
 //
 // Abas que ele cria e mantém (uma linha = um fato, nunca apague linhas):
 //   Contas      uma linha por pessoa cadastrada (ID C0001...). Senha só embaralhada (hash com sal).
-//   Lista VIP   uma linha por NOME colocado em lista, de todas as festas: quem é o convidado,
-//               quem colocou (ID da conta), festa, marca, data, e se entrou (check-in).
-//   Check-ins   você cola aqui a exportação do botão do AZList (Festa, Edição, Convidado...).
-//               Depois, em Extensões > Apps Script, rode "cruzarCheckins" para marcar quem entrou.
+//   Lista VIP   uma linha por NOME colocado em lista, de todas as festas: convidado, quem colocou (ID da conta),
+//               festa, marca e data. É a base que o painel JONNES RP lê para cruzar com os check-ins do AZList.
 //   AZList      escolha a festa na célula C1 e copie a coluna A (de A2 para baixo) para colar no AZList.
+// A análise (check-ins, quem leva quem, mapa de conexões) fica no painel privado, não aqui.
 
-var ABA_CONTAS = 'Contas', ABA_LISTA = 'Lista VIP', ABA_CHECKINS = 'Check-ins', ABA_AZ = 'AZList';
+var ABA_CONTAS = 'Contas', ABA_LISTA = 'Lista VIP', ABA_AZ = 'AZList';
 var COLS_CONTAS = ['ID', 'Nome', 'Chave do nome', 'Instagram', 'WhatsApp', 'E-mail', 'Nascimento', 'Estilos favoritos',
   'Agenda no WhatsApp', 'Agenda por e-mail', 'Veio de', 'Criada em', 'Listas enviadas', 'Última lista', 'Última festa',
   'Senha (embaralhada)', 'Sal', 'Sessões'];
 var COLS_LISTA = ['ID envio', 'Data da festa', 'Marca da festa', 'Festa (edição)', 'Convidado', 'Chave do convidado',
   'É o próprio titular', 'Enviado por (ID)', 'Enviado por', 'Instagram de quem enviou', 'WhatsApp de quem enviou',
-  'Enviado em', 'Entrou', 'Check-in'];
-var COLS_CHECKINS = ['Festa', 'Edição', 'Data e horário da festa', 'Convidado', 'Lista', 'Promoter', 'Check-in (data e horário)', 'Hostess do check-in', 'Nome subiu na lista (data e horário)'];
+  'Enviado em'];
 
 // ---------- utilidades ----------
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
@@ -163,7 +161,7 @@ function doPost(e) {
       var novos = [];
       nomes.forEach(function (x) {
         var k = chave_(x); if (!k || ja[k]) return; ja[k] = true;
-        novos.push([envio, "'" + dataFesta, marca, f[cF], x, k, k === minha ? 'sim' : 'não', eu.id, eu.nome, eu.ig, "'" + eu.wa, agora, '', '']);
+        novos.push([envio, "'" + dataFesta, marca, f[cF], x, k, k === minha ? 'sim' : 'não', eu.id, eu.nome, eu.ig, "'" + eu.wa, agora]);
       });
       if (novos.length) lista.getRange(lista.getLastRow() + 1, 1, novos.length, COLS_LISTA.length).setValues(novos);
       contas.getRange(eu.linha, 13, 1, 3).setValues([[eu.listas + 1, agora, f[cF]]]);
@@ -190,30 +188,6 @@ function prepararAZList_() {
   a.getRange('C1').setDataValidation(regra);
   if (!a.getRange('C1').getValue()) a.getRange('C1').setValue(Object.keys(opcoes).pop());
   a.getRange('A2').setFormula("=IFERROR(SORT(FILTER('Lista VIP'!E2:E, 'Lista VIP'!B2:B&\" · \"&'Lista VIP'!D2:D=C1)), \"\")");
-}
-
-// ---------- cruzar check-ins: cole a exportação do AZList na aba Check-ins e rode esta função ----------
-function cruzarCheckins() {
-  var lista = aba_(ABA_LISTA, COLS_LISTA), chk = aba_(ABA_CHECKINS, COLS_CHECKINS);
-  var nl = lista.getLastRow() - 1, nc = chk.getLastRow() - 1;
-  if (nl < 1 || nc < 1) return;
-  var cab = chk.getRange(1, 1, 1, chk.getLastColumn()).getDisplayValues()[0].map(chave_);
-  var cC = col_(cab, 'convidado'), cCk = col_(cab, 'check in'), cDH = -1;
-  cab.forEach(function (h, i) { if (cDH < 0 && h.indexOf('data') === 0 && h.indexOf('festa') > 0) cDH = i; });
-  var entrou = {}, diasComCheckin = {};
-  chk.getRange(2, 1, nc, chk.getLastColumn()).getDisplayValues().forEach(function (r) {
-    var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(r[cDH]); if (!m) return;
-    var dia = ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + m[3];
-    diasComCheckin[dia] = true;
-    entrou[dia + '|' + chave_(r[cC])] = r[cCk] || 'sim';
-  });
-  var dados = lista.getRange(2, 1, nl, COLS_LISTA.length).getDisplayValues();
-  var saida = dados.map(function (r) {
-    var m = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(r[1]), dia = m ? ('0' + m[1]).slice(-2) + '/' + ('0' + m[2]).slice(-2) + '/' + m[3] : '';
-    if (entrou[dia + '|' + r[5]]) return ['sim', entrou[dia + '|' + r[5]]];
-    return diasComCheckin[dia] ? ['não', ''] : [r[12], r[13]];   // só marca "não" se já colou os check-ins dessa data
-  });
-  lista.getRange(2, 13, nl, 2).setValues(saida);
 }
 
 // ---------- quando alguém esquecer a senha ----------
