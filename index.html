@@ -169,6 +169,7 @@ footer .draft b{color:var(--gold)}
 .info .t{color:var(--gold);font-weight:600}
 .info .s{color:var(--muted);font-size:13.5px}
 .info .acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.mapa{width:100%;height:220px;border:0;border-radius:12px;margin-top:10px;background:var(--surface-2);display:block}
 .pill{border:1px solid var(--line);border-radius:999px;padding:0 14px;min-height:38px;display:inline-flex;align-items:center;font-size:13px}
 .desc{margin:0;opacity:.9}
 .rules{border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
@@ -401,7 +402,7 @@ function pagina(id){
     <p class="desc">${esc(f.desc)}</p>
     ${f.vip?`<div class="info rules"><span class="t">Lista do Jonnes · VIP até ${esc(f.vipAte)}</span><span class="s">Sujeito à lotação da casa. ${esc(f.vipExtra||"")} Para validar, siga @${esc(INSTA_LISTA)} no Instagram e diga "Lista do Jonnes" na portaria.</span></div>`:""}
     <div class="info"><span class="t">${esc(quandoLongo(f))}</span><span class="s">${esc(horario)}</span></div>
-    <div class="info"><span class="t">${esc(f.local)}</span><span class="s">${esc(f.end)}</span><div class="acts"><button class="pill" data-copy="${esc(f.end)}">Copiar endereço</button><a class="pill" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.end)}" target="_blank" rel="noopener">Abrir no mapa</a></div></div>
+    <div class="info"><span class="t">${esc(f.local)}</span><span class="s">${esc(f.end)}</span><div class="acts"><button class="pill" data-copy="${esc(f.end)}">Copiar endereço</button><a class="pill" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.end)}" target="_blank" rel="noopener">Abrir no mapa</a></div>${/secret|revelad|a confirmar/i.test(f.local+" "+f.end)?"":`<iframe class="mapa" title="Mapa: ${esc(f.local)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(f.end)}&z=15&output=embed"></iframe>`}</div>
     ${f.estilos.length?`<div class="selos">${f.estilos.map(s=>`<span class="selo">${esc(s)}</span>`).join("")}</div>`:""}
   </div></div></div>
   <div class="sticky"><div class="in">${sticky}</div></div>`;
